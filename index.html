@@ -1,0 +1,2659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Korean Webtoon Platforms · 储值对比汇总</title>
+<!-- 字体：思源宋体（标题）+ 思源黑体（正文中文）+ Inter（数字/拉丁）。联网时加载，离线自动回退系统字体 -->
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://cdn.jsdelivr.net/npm/@fontsource/inter/400.css">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://cdn.jsdelivr.net/npm/@fontsource/inter/700.css">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/400.css">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc/700.css">
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  :root {
+    --bg: #f7f5ef;          /* 米白纸感底色 */
+    --surface: #fffefb;
+    --border: #ddd7c8;
+    --border-2: #ece7da;
+    --border-3: #c5beac;   /* 分组分隔线 */
+    --grid-line: #e2dccd;  /* 每列之间的浅色竖线 */
+    --text: #1c1a17;
+    --text-2: #4a463f;
+    --muted: #8d8779;
+    --red: #b42318;         /* 唯一的强调色，像印章 */
+    --green: #256e3a;
+    --green-bg: #eff3ea;
+    --ios: #3b4c8c;
+    --hk: #2f6f6a;
+    --gold-bg: #f6efdc; --gold-fg: #7a5b13; --gold-bd: #e6d9b4;
+    --serif: "Noto Serif SC", "Source Han Serif SC", Georgia, "Times New Roman", "宋体", "Songti SC", serif;
+    --sans: "Inter", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Heiti SC", sans-serif;
+  }
+  body {
+    font-family: var(--sans); background: var(--bg); color: var(--text);
+    margin: 0; padding: 30px 24px 64px; max-width: 1500px; margin: 0 auto;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ 页头：报头式，黑双线 ============ */
+  .hero {
+    background: none; border: none; border-bottom: 2px solid var(--text);
+    border-radius: 0; padding: 4px 0 16px; margin-bottom: 18px;
+    box-shadow: none; color: var(--text);
+  }
+  .hero h1 {
+    font-family: var(--serif); font-size: 34px; font-weight: 700;
+    letter-spacing: .02em; margin: 0 0 6px; color: var(--text);
+    word-break: keep-all;   /* 窄屏换行时不在中文词中间断开 */
+  }
+  .hero .sub {
+    font-size: 12.5px; color: var(--muted); letter-spacing: .14em;
+  }
+  .hero .rate {
+    font-size: 12.5px; color: var(--text-2); margin-top: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 2px; padding: 6px 10px; display: inline-block;
+    box-shadow: none; backdrop-filter: none;
+  }
+  .hero .rate b { font-variant-numeric: tabular-nums; }
+
+  /* ============ 说明 ============ */
+  details.notes {
+    background: none; border: none; border-bottom: 1px solid var(--border);
+    border-radius: 0; box-shadow: none;
+    padding: 8px 2px 10px; margin-bottom: 16px;
+    font-size: 13px; color: var(--text-2);
+  }
+  details.notes summary {
+    cursor: pointer; color: var(--text); font-weight: 600;
+    list-style: none; user-select: none; font-size: 13.5px; letter-spacing: .05em;
+  }
+  details.notes summary::-webkit-details-marker { display: none; }
+  details.notes summary::before { content: "▸ "; }
+  details.notes[open] summary::before { content: "▾ "; }
+  details.notes ul { margin: 8px 0 2px; padding-left: 20px; line-height: 1.8; }
+  details.notes b { color: var(--text); }
+
+  /* ============ 工具条 ============ */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg); border-bottom: 1px solid var(--border);
+    padding: 10px 0; margin-bottom: 4px;
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between;
+  }
+  .platforms { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn {
+    padding: 7px 15px; border-radius: 2px; cursor: pointer;
+    background: var(--surface); border: 1px solid var(--border);
+    font-size: 13.5px; font-weight: 500; color: var(--text-2);
+    transition: none; font-family: inherit; box-shadow: none;
+  }
+  .btn:hover { border-color: var(--text); color: var(--text); }
+  .btn.platform.active, .btn.sub.active {
+    background: var(--text); border-color: var(--text); color: #fff;
+  }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn.tool { font-size: 12.5px; padding: 6px 12px; }
+  .btn.tool.on { background: var(--text); border-color: var(--text); color: #fff; font-weight: 600; }
+
+  /* ============ 对比模式 ============ */
+  .cmp-picker {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 2px; padding: 11px 13px 12px; margin-bottom: 16px;
+  }
+  .cmp-hint { font-size: 12px; color: var(--muted); margin-bottom: 9px; letter-spacing: .03em; line-height: 1.6; }
+  .cmp-hint b { color: var(--text-2); }
+  /* 选择器里每个平台一行；不同平台之间用虚线稍微分隔开 */
+  .cmp-grp {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start;
+    margin-bottom: 0; padding: 6px 0;
+  }
+  .cmp-grp + .cmp-grp { border-top: 1px dashed var(--border-3); }
+  .cmp-grp:first-of-type { padding-top: 2px; }
+  .cmp-grp.cmp-grp-clear { border-top: 0; padding: 4px 0 0; }
+  .cmp-plat {
+    flex: 0 0 96px; font-size: 12px; font-weight: 700; color: var(--text-2);
+    padding-top: 4px; letter-spacing: .02em;
+  }
+  .chip {
+    padding: 3px 9px; font-size: 12px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text-2); border-radius: 2px;
+    cursor: pointer; font-family: inherit; line-height: 1.6;
+  }
+  .chip:hover { border-color: var(--text); color: var(--text); }
+  .chip.on { background: var(--text); border-color: var(--text); color: #fff; font-weight: 600; }
+  .chip .n { font-size: 10px; margin-left: 5px; opacity: .85; font-variant-numeric: tabular-nums; }
+  .chip.ghost { background: none; border-style: dashed; color: var(--muted); }
+  /* 对比结果：最多 4 项、每行最多 2 个并排；每张卡自带底部横向滚动条（栏目多时向右拖） */
+  /* 对比结果：最多 4 项，每一行最多 2 个（窄屏改单列，避免横向挤成一团） */
+  .cmp-list { display: grid; gap: 14px; align-items: start; grid-template-columns: minmax(0, 1fr); }
+  .cmp-list.n2, .cmp-list.n3, .cmp-list.n4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 760px) {
+    .cmp-list.n2, .cmp-list.n3, .cmp-list.n4 { grid-template-columns: minmax(0, 1fr); }
+  }
+  .cmp-item { display: flex; flex-direction: column; min-width: 0; }
+  /* 卡片上方的标题：预留两行高度，保证并排时各卡顶端对齐 */
+  .cmp-item .section-title {
+    min-height: 3.1em; margin: 0 0 8px; padding-bottom: 5px; font-size: 16px;
+    display: flex; align-items: flex-end; flex-wrap: wrap; gap: 6px;
+  }
+  .cmp-item .card { min-width: 0; overflow-x: auto; }
+  /* 底部细横向滚动条：可拖动看右侧栏目，尽量不占地方 */
+  .cmp-item .card::-webkit-scrollbar { height: 8px; }
+  .cmp-item .card::-webkit-scrollbar-track { background: var(--border-2); }
+  .cmp-item .card::-webkit-scrollbar-thumb { background: var(--border-3); border-radius: 4px; }
+  .cmp-item .card::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  .cmp-foot { font-size: 12px; color: var(--muted); margin-top: 14px; line-height: 1.65; }
+  .cmp-foot b { color: var(--red); }
+  .cmp-empty { color: var(--muted); font-size: 13px; padding: 22px 2px; text-align: center; }
+
+  /* ============ 按数量对比：输入目标数量（买多少个币 / 点） ============ */
+  .cmp-qtybar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    margin: 0 0 10px; padding: 7px 10px;
+    background: var(--bg); border: 1px dashed var(--border-3); border-radius: 2px;
+    font-size: 12.5px; color: var(--text-2);
+  }
+  .cmp-qtybar .lab { font-weight: 700; color: var(--text); letter-spacing: .04em; }
+  .cmp-qtybar input#cmp-qty {
+    width: 96px; padding: 4px 8px; font: inherit; font-size: 13px; text-align: center;
+    color: var(--text); background: var(--surface); border: 1px solid var(--border-3);
+    border-radius: 2px; font-variant-numeric: tabular-nums;
+  }
+  .cmp-qtybar input#cmp-qty:focus { outline: none; border-color: var(--text); }
+  .cmp-qtybar .qtyhint { color: var(--muted); font-size: 11.5px; line-height: 1.5; }
+  .cmp-qtybar .qtyhint b { color: var(--text-2); }
+  .cmp-qtybar.on { background: var(--green-bg); border-style: solid; border-color: var(--border-3); }
+  .cmp-qtybar .cmb { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: var(--text-2); user-select: none; }
+  .cmp-qtybar .cmb input { accent-color: var(--text); margin: 0; }
+
+  /* ============ 今日花费 · Today's Spending ============ */
+  .spend-picker {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 2px;
+    padding: 12px 13px; margin-bottom: 14px;
+  }
+  .spend-picker label { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--muted); letter-spacing: .06em; }
+  .spend-picker select {
+    font: inherit; font-size: 13px; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border-3); border-radius: 2px; padding: 5px 8px;
+    min-width: 160px; max-width: 320px;
+  }
+  .spend-picker select:focus { outline: none; border-color: var(--text); }
+  .spend-picker .sp-add { margin-left: auto; }
+  .spend-hero { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 14px; }
+  .spend-hero .sh-item {
+    flex: 1 1 210px; min-width: 0; background: var(--surface);
+    border: 1px solid var(--border); border-left: 3px solid var(--red); border-radius: 2px;
+    padding: 9px 13px;
+  }
+  .spend-hero .sh-t { font-size: 11.5px; color: var(--muted); letter-spacing: .1em; margin-bottom: 2px; }
+  .spend-hero .sh-v { font-size: 23px; font-weight: 700; color: var(--red); font-variant-numeric: tabular-nums; line-height: 1.18; }
+  .spend-hero .sh-m { font-size: 12.5px; color: var(--text-2); margin-top: 4px; line-height: 1.5; }
+  tr.ch-best td { background: var(--green-bg); }
+  tr.ch-best td.c-price { color: var(--green); font-weight: 700; }
+  .spend-cart td.c-x { text-align: center; }
+  .spend-cart .rm, .hist-sum .rm, .hist-acts .rm {
+    cursor: pointer; color: var(--muted); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 2px;
+    font-family: inherit; font-size: 11px; padding: 1px 7px;
+  }
+  .spend-cart .rm:hover, .hist-sum .rm:hover, .hist-acts .rm:hover { color: var(--red); border-color: var(--red); }
+  .spend-cart tr.total td { border-top: 1.5px solid var(--text); font-weight: 700; color: var(--text); }
+  .spend-cart tr.total td.c-tot { color: var(--red); font-size: 15px; text-align: center; }
+  .spend-empty { color: var(--muted); font-size: 13px; padding: 16px 2px; text-align: center; }
+
+  /* ---- 历史记录（按日期存档） ---- */
+  .hist-sum {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text-2); margin: -6px 0 10px;
+  }
+  .hist-sum b { color: var(--red); font-variant-numeric: tabular-nums; }
+  .hist-sum .btn.tool.tiny { margin-left: auto; }
+  .hist-list { border: 1px solid var(--border); border-radius: 2px; background: var(--surface); overflow: hidden; }
+  .hist-day + .hist-day { border-top: 1px dashed var(--border-3); }
+  .hist-day.open { background: var(--bg); }
+  .hist-head { display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer; }
+  .hist-head:hover { background: var(--green-bg); }
+  .hist-head .hd-date { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .hist-head .hd-today {
+    font-size: 10.5px; font-weight: 700; color: #fff; background: var(--red);
+    border-radius: 2px; padding: 1px 5px; letter-spacing: .05em; vertical-align: 1px;
+  }
+  .hist-head .hd-meta { margin-left: auto; font-size: 12.5px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+  .hist-head .hd-meta b { color: var(--red); }
+  .hist-head .hd-caret { color: var(--muted); font-size: 11px; width: 12px; text-align: center; }
+  .hist-det { margin: 0 12px 10px; }
+  .hist-det tr.total td { border-top: 1.5px solid var(--text); font-weight: 700; color: var(--text); }
+  .hist-det tr.total td.c-tot { color: var(--red); text-align: center; }
+  .hist-acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 0 12px 11px; }
+  .hist-acts .rm { font-size: 11.5px; padding: 4px 10px; }
+  .hist-tip {
+    font-size: 12px; color: var(--muted); line-height: 1.7; margin-top: 10px;
+    padding-left: 10px; border-left: 2px solid var(--border-3);
+  }
+  .hist-tip b { color: var(--text-2); }
+  .btn.tool.tiny { font-size: 11.5px; padding: 3px 9px; }
+  @media (max-width: 620px) {
+    .hist-head { flex-wrap: wrap; row-gap: 2px; }
+    .hist-head .hd-meta { margin-left: 0; }
+    .hist-head .hd-caret { margin-left: auto; }
+    .hist-sum .btn.tool.tiny { margin-left: 0; }
+    .hist-acts .btn.tool.tiny, .hist-acts .rm { flex: 1 1 auto; text-align: center; }
+  }
+
+  /* 数量对比结果表：紧凑，首行（最省）绿底 */
+  .qty-rank { margin: 0 0 18px; }
+  .qty-rank .section-title { margin-top: 0; }
+  .qty-rank td.c-rank { text-align: center; color: var(--muted); font-weight: 700; width: 40px; font-variant-numeric: tabular-nums; }
+  .qty-rank td.c-unit { text-align: center; color: var(--muted); font-size: 11.5px; white-space: nowrap; }
+  .qty-rank .sub { font-size: 11px; color: var(--muted); font-weight: 400; }
+  .qty-rank tr.is-best td { background: var(--green-bg); }
+  .qty-rank tr.is-best td.c-rank { color: var(--red); }
+  .qty-rank tr.is-best td.c-price { color: var(--green); font-weight: 700; }
+  .cmp-cost { font-size: 12px; color: var(--text-2); margin: -3px 0 8px; }
+  .cmp-cost b { color: var(--red); font-variant-numeric: tabular-nums; }
+  .cmp-cost.na { color: var(--muted); }
+
+  /* 二级标签 */
+  .subtabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; padding-left: 1px; }
+  .btn.sub { padding: 5px 13px; font-size: 13px; }
+  .btn.sub.active { box-shadow: none; }
+
+  /* ============ 分区标题：衬线 + 底线 ============ */
+  .section-title {
+    font-family: var(--serif); font-size: 18px; font-weight: 700;
+    margin: 22px 0 10px; padding: 0 0 5px; color: var(--text);
+    border: none; border-bottom: 1px solid var(--text);
+    border-left: none; border-radius: 0; background: none; letter-spacing: .02em;
+  }
+  .section-title:first-child { margin-top: 6px; }
+
+  /* ============ 网格 ============ */
+  .simple-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+    gap: 16px; margin-bottom: 4px;
+  }
+  .simple-grid.is-three { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 1180px) { .simple-grid.is-three { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 900px)  { .simple-grid, .simple-grid.is-three { grid-template-columns: 1fr; } }
+  .grid-cell { min-width: 0; }
+  .grid-cell .section-title { margin: 0 0 8px; font-size: 16px; }
+  .grid-cell .card { margin-bottom: 0; height: calc(100% - 42px); }
+
+  .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 1100px) { .month-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px)  { .month-grid { grid-template-columns: 1fr; } }
+
+  /* ============ 卡片：直角、细线、无阴影 ============ */
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 2px; padding: 12px 14px; margin-bottom: 14px;
+    box-shadow: none; transition: none; overflow-x: auto;
+  }
+  .card:hover { box-shadow: none; }
+  .card-title {
+    font-family: var(--serif); font-size: 16px; font-weight: 700;
+    margin-bottom: 4px; color: var(--text); display: block;
+  }
+  .card-title::before { display: none; }
+  .card-note {
+    font-size: 12px; color: var(--gold-fg); background: var(--gold-bg);
+    border: 1px solid var(--gold-bd); border-radius: 2px;
+    padding: 3px 8px; display: inline-block; margin: 0 0 8px;
+  }
+
+  /* ============ 表格：书册式上下双线 ============ */
+  table {
+    width: 100%; border-collapse: collapse; font-size: 13.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  th, td {
+    padding: 7px 8px; text-align: right; vertical-align: middle;
+    border-bottom: 1px solid var(--border-2);
+  }
+  /* 每一栏都用浅色竖线分隔（分组的竖线更深，见 .grp-sep） */
+  th + th, td + td { border-left: 1px solid var(--grid-line); }
+  /* 列对齐规则：文本列靠左、所有数字列（数量 / Price / Per）居中，表头与数据用同一套 */
+  th.c-text,  td.c-text  { text-align: left; }
+  th.c-qty,   td.c-qty   { text-align: center; }
+  th.c-price, td.c-price { text-align: center; }
+  th.c-per,   td.c-per   { text-align: center; }
+  th {
+    color: var(--text-2); font-weight: 600; font-size: 11.5px;
+    letter-spacing: .06em; background: none; padding: 7px 8px;
+    border-top: 1.5px solid var(--text); border-bottom: 1px solid var(--text);
+    white-space: nowrap;
+  }
+  tbody tr:hover { background: #f4f1e8; }
+
+  /* 渠道分组：分隔竖线 + 组头居中跨列 + 淡色底 */
+  .grp-sep { border-left: 1px solid var(--border-3); padding-left: 13px; }
+  th.grp-sep { padding-left: 13px; }
+  th.grp-main, th.grp-ios, th.grp-hk, th.grp-coupon {
+    text-align: center; font-size: 12px; font-weight: 700; letter-spacing: .12em;
+    padding: 6px 8px; border-left: 1px solid var(--border-3);
+    border-bottom: 1px solid var(--text); border-top-width: 2.5px;
+  }
+  th.grp-main { color: var(--text); background: #eeebdf; border-top-color: var(--text); }
+  th.grp-ios  { color: var(--ios);  background: #e8ebf3; border-top-color: var(--ios); }
+  th.grp-hk   { color: var(--hk);   background: #e4eeec; border-top-color: var(--hk); }
+  th.grp-coupon { color: var(--gold-fg); background: var(--gold-bg); border-top-color: var(--gold-bd); }
+  .na { color: #b8b2a2; }   /* 券不适用（未达门槛） */
+
+  /* 最优行 / 需抢行 */
+  tr.best { background: var(--green-bg); }
+  tr.best td { color: var(--green); font-weight: 600; }
+  tr.limited { background: #f9f0ec; }
+  tr.limited td:first-child { box-shadow: inset 3px 0 0 var(--red); }
+  tr.limited.best { background: #f9f0ec; }
+  /* 券后价表：该组最优的单元格绿底（整行都最优时再用 tr.best，与其它表完全一致） */
+  td.cell-best { background: var(--green-bg); color: var(--green); font-weight: 600; }
+
+  /* 徽章与标签：直角小方块 */
+  .badge {
+    display: inline-block; font-size: 10px; padding: 1px 6px;
+    margin-left: 6px; background: var(--red); color: #fff;
+    border-radius: 1px; font-weight: 600; letter-spacing: .1em; vertical-align: 1px;
+  }
+  .tag {
+    display: inline-block; font-size: 10px; padding: 1px 6px;
+    margin-left: 5px; border-radius: 1px; font-weight: 500; vertical-align: 1px;
+  }
+  .tag.gold { background: var(--gold-bg); color: var(--gold-fg); border: 1px solid var(--gold-bd); }
+  .tag.limited { background: #fff; color: var(--red); border: 1px solid var(--red); font-weight: 600; letter-spacing: .06em; }
+
+  .cny { color: var(--green); font-weight: 600; }
+  .ios-col { color: var(--ios); }
+  .hk-col { color: var(--hk); }
+  .price-num { color: var(--muted); font-size: 11.5px; font-weight: 400; white-space: nowrap; }
+
+  .plat-notes {
+    background: none; border: none; border-bottom: 1px dashed var(--border);
+    border-radius: 0; box-shadow: none; padding: 4px 2px 10px; margin: 0 0 14px;
+    font-size: 13px; color: var(--text-2); list-style: none;
+  }
+  .plat-notes li { font-size: 13px; color: var(--text-2); margin-bottom: 2px; }
+
+  /* ============ 最低价速览：报眼式，红数字 ============ */
+  .bestbar { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 18px; }
+  .bestbar .bb-item {
+    flex: 1 1 240px; min-width: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 3px solid var(--red); border-radius: 2px;
+    padding: 9px 13px; box-shadow: none;
+  }
+  .bestbar .bb-title { font-size: 11.5px; color: var(--muted); letter-spacing: .1em; margin-bottom: 2px; }
+  .bestbar .bb-val {
+    font-family: "Inter", var(--serif); font-size: 24px; font-weight: 700;
+    color: var(--red); font-variant-numeric: tabular-nums; line-height: 1.15;
+    letter-spacing: -.01em;
+  }
+  .bestbar .bb-meta { font-size: 12.5px; color: var(--text-2); margin-top: 4px; line-height: 1.5; word-break: break-all; }
+  .bestbar .bb-note { flex: 1 1 100%; font-size: 11.5px; color: var(--muted); padding-left: 1px; }
+
+  .loading { color: var(--muted); padding: 40px; text-align: center; font-size: 14px; }
+
+  /* 页脚 */
+  .foot {
+    margin-top: 34px; padding-top: 12px; border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 12px; text-align: left; letter-spacing: .04em;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #cfc9ba; border-radius: 0; }
+  ::-webkit-scrollbar-thumb:hover { background: #a9a294; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-left">
+    <h1>Korean Webtoon Platforms · 储值对比汇总</h1>
+    <div class="sub">自用整理 · 实时汇率换算 · Per 值自动计算 · 单页全览</div>
+  </div>
+  <div class="rate" id="rate-display">正在获取实时汇率…</div>
+</div>
+
+<details class="notes">
+  <summary>数据说明与规则</summary>
+  <ul>
+    <li>数量 <b>A+B</b>：A = 永久币，B = 限时币（<b>限时多久各平台规则不同</b>，详见各平台下方「注」）</li>
+    <li><b>带 p 的数字是积分，不是币</b>：如 Lezhin 首充的「399+16000p」= <b>399 永久币 + 16000 限时积分</b>。积分只能在部分内容上抵用，与币不是一回事；本页的 Per 值与「按数量对比」都<b>只按币计算</b>，积分不计入数量</li>
+    <li><span class="tag gold">限时币2个月</span> 表示限时币有效期 2 个月</li>
+    <li>带 <b>iOS 港区</b> 列的表：该组以 <b>港币</b> 计价，按实时港币汇率折算RMB再算 Per 值；iOS 港区币数与网页档位可能不同，分开标注</li>
+    <li><span class="tag limited">需抢</span> 表示<b>限量、需要抢</b>的档位（历史月份默认 70% 与 60% 档，个别档位另标），绿色底标出</li>
+    <li><span class="badge">Best</span> 表示同表内 Per 值最低的档位</li>
+    <li>Per 值 = RMB价格 ÷ 计算基数 × 系数，均按实时汇率动态计算</li>
+    <li>顶部「<b>对比模式</b>」可同时挑 <b>最多 4 个分区</b>（可跨平台：如 Lezhin 首充 vs 韩bom 双倍 vs Ridi 首充）比较，<b>每行最多并排 2 个</b>（窄屏自动变单列），按 Per 值排名；填了「想买 N 个」后改按「凑够 N 个的最省买法」排序，<b>单档不够时会多档组合</b>（可关闭）</li>
+    <li>顶部「<b>今日花费</b>」按 <b>平台 → 活动 → 档次</b> 三级下拉选好，立刻算出该档在各渠道折合 RMB 的价格与最省渠道，可「加入今日清单」累计今天总共要花多少</li>
+  </ul>
+</details>
+
+<div class="topbar">
+  <nav class="platforms" id="platforms"></nav>
+  <div class="tools">
+    <button class="btn tool" id="btn-copy" type="button">复制当前平台表格</button>
+    <button class="btn tool" id="btn-csv" type="button">导出 CSV</button>
+    <button class="btn tool" id="btn-min" type="button">只看最低档：开</button>
+    <button class="btn tool" id="btn-cmp" type="button">对比模式：关</button>
+    <button class="btn tool" id="btn-spend" type="button">今日花费：关</button>
+  </div>
+</div>
+<nav class="subtabs" id="subtabs"></nav>
+<main id="content"></main>
+
+<div class="foot">数据为【猫好困】个人整理，仅供比价参考 · 汇率随行情波动，实际以支付页面为准</div>
+
+<script>
+/* ================= 数据区 ================= */
+const dataStore = {
+
+  "Lezhin": {
+    currency: "KRW",
+    perLabels: ["Per/1c", "Per/2c", "Per/3c"],
+    perX: [1, 2, 3],
+    pointsGroupLabel: "",   // 积分表不显示 “Visa/万事达卡” 分组标题
+    notes: [
+      "汇率：1 韩元 ≈ <b class=\"rate-live\" data-rate=\"KRW\">--</b> 元（即 1 元 ≈ <b class=\"rate-live\" data-rate-inv=\"KRW\">--</b> 韩元，实时汇率，取当日行情）。",
+      "Lezhin 基础每话 3c，打折会有每话 1c / 2c。",
+      "首充即注册后第一次充值，若第一次充其他折扣会把首充顶掉；次充即第二次，同理。首充、次充不限时，均只能充一次；首充没充也可以直接冲活动。每月基础活动都不限量（有些需要抢）。",
+      "数量有 + 代表前面是永久币、后面是限时币，<b>除特别标注外限时一个月。</b>",
+      "<b>带 p 的数字是积分，不是币</b>：首充 / 次充的数量写成「399+16000p」，表示 <b>399 永久币 + 16000 限时积分</b>。积分只能在部分内容上抵用，与币不是一回事；所以 Per 值与「按数量对比」都<b>只按币计算</b>（= 号前的永久币），积分不计入数量。",
+    ],
+    sections: [
+      { title: "首充", note: "除 Visa / 万事达卡外，还支持 iOS 直充 / 港区。<b>数量里带 p 的部分是积分，不是币。</b>", rows: [
+        { discount: "0.5",  qty: "399+16000p", price: 39900, base: 399, iosPrice: 168 },
+        { discount: "0.4",  qty: "166+9000p",  price: 19900, base: 166, iosPrice: 88 },
+        { discount: "0.35", qty: "77+5000p",   price: 9900,  base: 77, iosPrice: 38  },
+        { discount: "0.3",  qty: "35+3000p",   price: 4900,  base: 35, iosPrice: 22  }
+      ]},
+      { title: "次充", note: "除 Visa / 万事达卡外，还支持 iOS 直充 / 港区。<b>数量里带 p 的部分是积分，不是币。</b>", rows: [
+        { discount: "0.5", qty: "300+15000p", price: 30000, base: 300 },
+        { discount: "0.4", qty: "84+5000p",   price: 10000, base: 84  },
+        { discount: "0.3", qty: "36+2500p",   price: 5000,  base: 36  }
+      ]},
+      { title: "积分", isPoints: true, mainLabel: "网页（韩元）", note: "除 Visa / 万事达卡外，还支持 iOS 直充：国区（RMB）与港区（港币），见右侧两组。", rows: [
+        { tier: "20000", qty: "750", price: 90000, base: 750, iosPrice: 398, hkPrice: 488 },
+        { tier: "10000", qty: "400", price: 50000, base: 400, iosPrice: 198, hkPrice: 228 },
+        { tier: "5000",  qty: "150", price: 20000, base: 150, iosPrice: 88,  hkPrice: 88  },
+        { tier: "3000",  qty: "70",  price: 10000, base: 70,  iosPrice: 38,  hkPrice: 48  },
+        { tier: "1000",  qty: "30",  price: 5000,  base: 30,  iosPrice: 22,  hkPrice: 22  },
+        { tier: "500",   qty: "10",  price: 2000,  base: 10,  iosPrice: 8,   hkPrice: 8   }
+      ]},
+      { title: "普通", solo: true, hk: true, mainLabel: "网页（韩元）", note: "除 Visa / 万事达卡外，还支持 iOS 港区直充（右侧一组，币数与网页档不同）。", rows: [
+        { discount: "0.31", qty: "650", price: 90000, base: 650, hkQty: "540", hkPrice: 488, hkBase: 540 },
+        { discount: "0.29", qty: "350", price: 50000, base: 350, hkQty: "300", hkPrice: 228, hkBase: 300 },
+        { discount: "0.29", qty: "140", price: 20000, base: 140, hkQty: "120", hkPrice: 88,  hkBase: 120 },
+        { discount: "0.17", qty: "60",  price: 10000, base: 60,  hkQty: "50",  hkPrice: 48,  hkBase: 50  },
+        { discount: "---",  qty: "25",  price: 5000,  base: 25,  hkQty: "21",  hkPrice: 22,  hkBase: 21  }
+      ]},
+      { title: "历史月份", isMonths: true, monthNote: "仅限网页版，目前仅支持 Visa / 万事达卡。", grabDiscounts: ["0.7", "0.6"], months: [
+        { month: "2024.12", note: "网页版优惠，仅支持 Visa/万事达卡。", rows: [
+          { discount: "0.8", qty: "100+400=500",  price: 20000, base: 500, limited: true },
+          { discount: "0.7", qty: "835+835=1670", price: 99000, base: 1670, tag: "限时币2个月" },
+          { discount: "0.6", qty: "370+370=740",  price: 59000, base: 740 },
+          { discount: "0.5", qty: "195+195=390",  price: 39000, base: 390 },
+          { discount: "0.4", qty: "80+80=160",    price: 19000, base: 160 }
+        ]},
+        { month: "未知", rows: [
+          { discount: "0.7", qty: "410+410=820", price: 49000, base: 820 },
+          { discount: "0.6", qty: "182+182=364", price: 29000, base: 364 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.4", qty: "205+205=410", price: 49000, base: 410 },
+          { discount: "0.3", qty: "104+104=208", price: 29000, base: 208 }
+        ]},
+        { month: "2025.9", rows: [
+          { discount: "0.6", qty: "250+365=615", price: 49000, base: 615 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.4", qty: "205+205=410", price: 49000, base: 410 },
+          { discount: "0.3", qty: "104+104=208", price: 29000, base: 208 }
+        ]},
+        { month: "2025.10", rows: [
+          { discount: "0.7", qty: "110+220=330", price: 19900, base: 330 },
+          { discount: "0.6", qty: "250+365=615", price: 49000, base: 615 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.4", qty: "205+205=410", price: 49000, base: 410 },
+          { discount: "0.3", qty: "104+104=208", price: 29000, base: 208 }
+        ]},
+        { month: "2025.11", rows: [
+          { discount: "0.6", qty: "620+620=1240", price: 99000, base: 1240, tag: "限时币2个月" },
+          { discount: "0.5", qty: "495+495=990",  price: 99000, base: 990 },
+          { discount: "0.4", qty: "205+205=410",  price: 49000, base: 410 },
+          { discount: "0.3", qty: "104+104=208",  price: 29000, base: 208 }
+        ]},
+        { month: "2025.12", rows: [
+          { discount: "0.7", qty: "110+220=330", price: 19900, base: 330 },
+          { discount: "0.6", qty: "250+250=500", price: 39000, base: 500 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.4", qty: "205+205=410", price: 49000, base: 410 },
+          { discount: "0.3", qty: "104+104=208", price: 29000, base: 208 }
+        ]},
+        { month: "2026.2", rows: [
+          { discount: "0.7", qty: "135+200=335", price: 20000, base: 335 },
+          { discount: "0.7", qty: "405+405=810", price: 49000, base: 810 },
+          { discount: "0.6", qty: "181+181=362", price: 29000, base: 362 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.4", qty: "205+205=410", price: 49000, base: 410 },
+          { discount: "0.3", qty: "104+104=208", price: 29000, base: 208 }
+        ]},
+        { month: "2026.4", rows: [
+          { discount: "0.6", qty: "620+620=1240", price: 99000, base: 1240, tag: "限时币2个月" },
+          { discount: "0.5", qty: "495+495=990",  price: 99000, base: 990 },
+          { discount: "0.4", qty: "163+163=326",  price: 39000, base: 326 },
+          { discount: "0.3", qty: "104+104=208",  price: 29000, base: 208 }
+        ]},
+        { month: "2026.5", rows: [
+          { discount: "0.7", qty: "240+240=480", price: 29000, base: 480 },
+          { discount: "0.6", qty: "305+305=610", price: 49000, base: 610 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.4", qty: "163+163=326", price: 39000, base: 326 },
+          { discount: "0.3", qty: "104+104=208", price: 29000, base: 208 }
+        ]},
+        { month: "2026.6", rows: [
+          { discount: "0.6", qty: "300+310=610", price: 49000, base: 610 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.4", qty: "163+162=325", price: 39000, base: 325 },
+          { discount: "0.3", qty: "72+71=143",   price: 19000, base: 143 },
+          { discount: "0.2", qty: "32+31=63",    price: 10000, base: 63 }
+        ]},
+        { month: "2026.7", rows: [
+          { discount: "0.6", qty: "240+250=490", price: 39000, base: 490 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.3", qty: "104+104=208", price: 29000, base: 208 },
+          { discount: "0.2", qty: "32+31=63",    price: 10000, base: 63 }
+        ]},
+        { month: "2026.8", rows: [
+          { discount: "0.7", qty: "240+240=480", price: 29000, base: 480 },
+          { discount: "0.6", qty: "305+305=610", price: 49000, base: 610 },
+          { discount: "0.5", qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.4", qty: "163+162=325", price: 39000, base: 325 },
+          { discount: "0.3", qty: "72+71=143",   price: 19000, base: 143 }
+        ]},
+        { month: "2026.9", rows: [
+          { discount: "0.7",  qty: "325+325=650", price: 39000, base: 650 },
+          { discount: "0.5",  qty: "495+495=990", price: 99000, base: 990 },
+          { discount: "0.45", qty: "223+223=446", price: 49000, base: 446, tag: "限时币2个月" },
+          { discount: "0.4",  qty: "163+163=326", price: 39000, base: 326 },
+          { discount: "0.3",  qty: "104+104=208", price: 29000, base: 208 }
+        ]}
+      ]}
+    ]
+  },
+
+  "Bomtoon（韩bom）": {
+    currency: "KRW",
+    perLabels: ["Per/1c", "Per/2c", "Per/3c"],
+    perX: [1, 2, 3],
+    notes: [
+      "汇率：1 韩元 ≈ <b class=\"rate-live\" data-rate=\"KRW\">--</b> 元（即 1 元 ≈ <b class=\"rate-live\" data-rate-inv=\"KRW\">--</b> 韩元，实时汇率，取当日行情）。",
+      "Bomtoon（韩bom）基础每话 3c，打折会有每话 1c / 2c。",
+      "数量有 + 代表前面是永久币、后面是限时币，<b>除特别标注外限时一个月。</b>",
+      "除特别标注外均不限量。",
+      "支持银联 / Paypal / Visa / 万事达卡。",
+    ],
+    sections: [
+      { title: "普通（网页版）· 券后价", solo: true, isCoupons: true, mainLabel: "原价",
+        note: "券使用条件：满 5,000₩ 可用 1000₩ 券 / 10% 券；满 10,000₩ 可用 3000₩ 券；满 40,000₩ 可用 15% 券；门槛按原价判定，未达门槛标「—」。各券按单张使用（不叠加）；Price 下方RMB按实时汇率折算，Per/1c = 券后RMB ÷ 币数，每组 Per/1c 最低的一档标「Best」。",
+        coupons: [
+          { label: "1000₩ 满减券", kind: "minus",   value: 1000, threshold: 5000  },
+          { label: "3000₩ 满减券", kind: "minus",   value: 3000, threshold: 10000 },
+          { label: "10% 折扣券",   kind: "percent", value: 0.9,  threshold: 5000  },
+          { label: "15% 折扣券",   kind: "percent", value: 0.85, threshold: 40000 }
+        ],
+        rows: [
+          { qty: "22+3=25",     price: 4500,   base: 25  },
+          { qty: "45+10=55",    price: 9900,   base: 55  },
+          { qty: "90+30=120",   price: 19800,  base: 120 },
+          { qty: "140+50=190",  price: 29500,  base: 190 },
+          { qty: "240+90=330",  price: 49800,  base: 330 },
+          { qty: "243+92=335",  price: 50000,  base: 335 },
+          { qty: "360+140=500", price: 69800,  base: 500 },
+          { qty: "500+200=700", price: 84000,  base: 700 },
+          { qty: "570+270=840", price: 100000, base: 840 }
+        ]},
+      { title: "首充（限时72h）", rows: [
+        { qty: "20+10=30",    price: 3500,  base: 30  },
+        { qty: "50+50=100",   price: 9900,  base: 100 },
+        { qty: "80+80=160",   price: 15900, base: 160 },
+        { qty: "100+100=200", price: 19800, base: 200 },
+        { qty: "200+200=400", price: 39600, base: 400 }
+      ]},
+      { title: "双倍优惠（22号）", rows: [
+        { qty: "90+60=150",   price: 19800, base: 150 },
+        { qty: "140+100=240", price: 29500, base: 240 },
+        { qty: "210+140=350", price: 39800, base: 350 },
+        { qty: "360+280=640", price: 69800, base: 640 },
+        { qty: "500+400=900", price: 84000, base: 900 }
+      ]},
+      { title: "iOS直充（港区）", currency: "HKD", rows: [
+        { qty: "22+3=25",     price: 22,  base: 25  },
+        { qty: "50+5=55",     price: 48,  base: 55  },
+        { qty: "100+20=120",  price: 88,  base: 120 },
+        { qty: "140+50=190",  price: 148, base: 190 },
+        { qty: "240+90=330",  price: 228, base: 330 },
+        { qty: "350+105=455", price: 288, base: 455 },
+        { qty: "500+175=675", price: 488, base: 675 }
+      ]},
+      { title: "节日优惠 50%", rows: [
+        { qty: "50+10=60",    price: 9600,  base: 60  },
+        { qty: "150+50=200",  price: 28000, base: 200 },
+        { qty: "300+100=400", price: 48000, base: 400 },
+        { qty: "600+300=900", price: 90000, base: 900 }
+      ]},
+      { title: "节日优惠 55%", rows: [
+        { qty: "80+30=110",   price: 16500, base: 110 },
+        { qty: "150+50=200",  price: 26000, base: 200 },
+        { qty: "300+100=400", price: 44000, base: 400 },
+        { qty: "600+300=900", price: 81000, base: 900 }
+      ]},
+      { title: "节日优惠 65%（限量）", rows: [
+        { qty: "90+50=140",    price: 16800, base: 140  },
+        { qty: "220+100=320",  price: 32000, base: 320  },
+        { qty: "320+180=500",  price: 44900, base: 500  },
+        { qty: "470+310=780",  price: 61900, base: 780  },
+        { qty: "800+600=1400", price: 98000, base: 1400, tag: "限时币2个月" }
+      ]},
+      { title: "黑五（限量）", rows: [
+        { qty: "150+60=210",   price: 18900, base: 210  },
+        { qty: "300+150=450",  price: 36000, base: 450  },
+        { qty: "600+300=900",  price: 63000, base: 900  },
+        { qty: "930+720=1650", price: 99000, base: 1650, tag: "限时币2个月" }
+      ]}
+    ]
+  },
+
+  "Lezhinus": {
+    currency: "USD",
+    perLabels: ["Per/30c", "Per/20c", "Per/15c"],
+    perX: [30, 20, 15],
+    notes: [
+      "汇率：1 美元 ≈ <b class=\"rate-live\" data-rate=\"USD\">--</b> 元（即 1 元 ≈ <b class=\"rate-live\" data-rate-inv=\"USD\">--</b> 美元，实时汇率，取当日行情）。",
+      "Lezhinus 基础每话 30c，打折会有每话 10c / 20c / 15c。",
+      "数量有 + 代表前面是永久币、后面是限时币，限时情况不太了解。",
+      "<b>带 p 的数字是积分，不是币</b>：首充数量写成「2225+5000p」，表示 <b>2225 永久币 + 5000 限时积分</b>，积分不计入数量与 Per 计算。一般是 1 个月。",
+    ],
+    sections: [
+      { title: "首充", note: "除 Visa / 万事达卡外，还支持 iOS 直充。<b>数量里带 p 的部分是积分，不是币。</b>", rows: [
+        { discount: "0.5",  qty: "2225+5000p", price: 24.99, base: 2225 },
+        { discount: "0.4",  qty: "1165+3000p", price: 15.99, base: 1165 },
+        { discount: "0.35", qty: "685+2000p",  price: 10.99, base: 685  },
+        { discount: "0.3",  qty: "345+1000p",  price: 5.99,  base: 345  }
+      ]},
+      { title: "次充", note: "除 Visa / 万事达卡外，还支持 iOS 直充。", rows: [
+        { discount: "0.5", qty: "800+800=1600", price: 19.99, base: 1600 },
+        { discount: "0.4", qty: "400+335=735",  price: 10.99, base: 735  },
+        { discount: "0.3", qty: "200+145=345",  price: 5.99,  base: 345  }
+      ]},
+      { title: "积分", isPoints: true, mainLabel: "网页（美元）", note: "除 Visa / 万事达卡外，还支持 iOS 港区直充（右侧一组）；港区档位币数与网页档不同，已在港区分组内单独标注数量。", rows: [
+        { tier: "6000", qty: "1600", price: 29.99, base: 1600, hkQty: "1800", hkPrice: 328, hkBase: 1800 },
+        { tier: "4000", qty: "1000", price: 19.99, base: 1000, hkQty: "1200", hkPrice: 228, hkBase: 1200 },
+        { tier: "2000", qty: "470",  price: 9.99,  base: 470,  hkQty: "500",  hkPrice: 118, hkBase: 500  },
+        { tier: "1000", qty: "120",  price: 2.99,  base: 120,  hkQty: "150",  hkPrice: 38,  hkBase: 150  }
+      ]},
+      { title: "普通", note: "除 Visa / 万事达卡外，还支持 iOS 直充。", rows: [
+        { discount: "0.25", qty: "2000+670=2670", price: 49.99, base: 2670 },
+        { discount: "0.2",  qty: "1200+300=1500", price: 29.99, base: 1500 },
+        { discount: "0.15", qty: "800+145=945",   price: 19.99, base: 945  },
+        { discount: "0.1",  qty: "400+45=445",    price: 9.99,  base: 445  },
+        { discount: "---",  qty: "240",           price: 5.99,  base: 240  }
+      ]},
+      { title: "Sale（网页版/plus）", note: "网页版优惠支持 Visa / 万事达卡 / 银联信用卡。", rows: [
+        { discount: "0.8",  qty: "4000+16000=20000", price: 99.99, base: 20000 },
+        { discount: "0.7",  qty: "1600+1600=3200",   price: 23.99, base: 3200  },
+        { discount: "0.55", qty: "2700+2600=5300",   price: 59.99, base: 5300  },
+        { discount: "0.5",  qty: "2400+2400=4800",   price: 59.99, base: 4800  },
+        { discount: "0.4",  qty: "1400+1400=2800",   price: 41.99, base: 2800  },
+        { discount: "0.3",  qty: "800+800=1600",     price: 27.99, base: 1600  },
+        { discount: "0.2",  qty: "325+325=650",      price: 12.99, base: 650   }
+      ]},
+      { title: "Sale（ios/Play）", rows: [
+        { discount: "0.45", qty: "2370+2000=4370", price: 59.99, base: 4370 },
+        { discount: "0.35", qty: "1390+1200=2590", price: 41.99, base: 2590 },
+        { discount: "0.25", qty: "750+750=1500",   price: 27.99, base: 1500 },
+        { discount: "0.15", qty: "285+280=565",    price: 11.99, base: 565  }
+      ]}
+    ]
+  },
+
+  "Tappytoon": {
+    currency: "USD",
+    perLabels: ["Per/100P", "Per/150P", "Per/200P", "Per/300P", "Per/400P"],
+    perX: [100, 150, 200, 300, 400],
+    notes: [
+      "汇率：1 美元 ≈ <b class=\"rate-live\" data-rate=\"USD\">--</b> 元（即 1 元 ≈ <b class=\"rate-live\" data-rate-inv=\"USD\">--</b> 美元，实时汇率，取当日行情）。",
+      "Tappytoon 基础每话 300p/400p，打折会有每话 100p/150p/200p/300p。",
+      "购买得到的都是永久积分，签到送的积分限时 7 天。",
+    ],
+    sections: [
+      { title: "每月优惠（Paypal 支付）", rows: [
+        { discount: "0.22", qty: "9000",   price: 9.99,  base: 9000   },
+        { discount: "0.26", qty: "19000",  price: 19.99, base: 19000  },
+        { discount: "0.31", qty: "41000",  price: 39.99, base: 41000  },
+        { discount: "0.34", qty: "53000",  price: 49.99, base: 53000  },
+        { discount: "0.37", qty: "106000", price: 94.99, base: 106000 }
+      ]},
+      { title: "常规", rows: [
+        { discount: "0.18", qty: "2300",  price: 2.69,  base: 2300  },
+        { discount: "0.19", qty: "3900",  price: 4.49,  base: 3900  },
+        { discount: "0.21", qty: "8000",  price: 8.99,  base: 8000  },
+        { discount: "0.26", qty: "17000", price: 17.99, base: 17000 },
+        { discount: "0.3",  qty: "36000", price: 35.99, base: 36000 },
+        { discount: "0.32", qty: "46000", price: 44.99, base: 46000 },
+        { discount: "0.34", qty: "91000", price: 85.49, base: 91000 }
+      ]},
+      { title: "iOS 港区", currency: "HKD", rows: [
+        { discount: "0.18", qty: "1400",  price: 18,  base: 1400  },
+        { discount: "0.19", qty: "3900",  price: 38,  base: 3900  },
+        { discount: "0.21", qty: "8000",  price: 88,  base: 8000  },
+        { discount: "0.26", qty: "17000", price: 148, base: 17000 },
+        { discount: "0.3",  qty: "36000", price: 288, base: 36000 },
+        { discount: "0.32", qty: "46000", price: 388, base: 46000 },
+        { discount: "0.34", qty: "91000", price: 688, base: 91000 }
+      ]}
+    ]
+  },
+
+  "Beltoon（日bom）": {
+    currency: "JPY",
+    perLabels: ["Per/65p", "Per/55p", "Per/52p"],
+    perX: [65, 55, 52],
+    notes: [
+      "汇率：1 日元 ≈ <b class=\"rate-live\" data-rate=\"JPY\">--</b> 元（即 1 元 ≈ <b class=\"rate-live\" data-rate-inv=\"JPY\">--</b> 日元，实时汇率，取当日行情）。",
+      "Beltoon（日bom）基础一话 65p、55p，按打折价格不定，有 52p。",
+      "数量有 + 的前面正常积分有效期 180 天（6 个月），后面奖励积分有效期 90 天（3 个月）；iOS 直充全是正常积分有效期 180 天（6 个月）。",
+      "支付支持 Visa 卡，不支持万事达卡。",
+    ],
+    sections: [
+      { title: "新人五折卷（有效期一个月）", hasSpecial: true, priceFactor: 0.5, rows: [
+        { qty: "300",             price: 330,   base: 300 },
+        { qty: "600",             price: 660,   base: 600 },
+        { qty: "1000+30=1030",    price: 1100,  base: 1030 },
+        { qty: "2000+80=2080",    price: 2200,  base: 2080 },
+        { qty: "5000+250=5250",   price: 5500,  base: 5250 },
+        { qty: "10000+600=10600", price: 11000, base: 10600 }
+      ]},
+      { title: "首充（无券）", rows: [
+        { qty: "300",             price: 330,   base: 300   },
+        { qty: "600",             price: 660,   base: 600   },
+        { qty: "1000+30=1030",    price: 1100,  base: 1030  },
+        { qty: "2000+80=2080",    price: 2200,  base: 2080  },
+        { qty: "5000+250=5250",   price: 5500,  base: 5250  },
+        { qty: "10000+600=10600", price: 11000, base: 10600 }
+      ]},
+      { title: "iOS 直充", solo: true, hk: true, currency: "CNY", mainLabel: "iOS 国区",
+        note: "同一批档位分两个渠道：左为国区（RMB）、右为港区（港币），数量相同、价格不同。",
+        rows: [
+        { qty: "145",  price: 8,   base: 145,  hkQty: "145",  hkPrice: 8,   hkBase: 145  },
+        { qty: "290",  price: 15,  base: 290,  hkQty: "290",  hkPrice: 18,  hkBase: 290  },
+        { qty: "590",  price: 28,  base: 590,  hkQty: "590",  hkPrice: 32,  hkBase: 590  },
+        { qty: "1000", price: 48,  base: 1000, hkQty: "1000", hkPrice: 58,  hkBase: 1000 },
+        { qty: "2000", price: 88,  base: 2000, hkQty: "2000", hkPrice: 98,  hkBase: 2000 },
+        { qty: "4000", price: 198, base: 4000, hkQty: "4000", hkPrice: 228, hkBase: 4000 }
+      ]}
+    ]
+  },
+
+  "Ridi": {
+    currency: "KRW",
+    perLabels: ["Per/100", "Per/200", "Per/300", "Per/400", "Per/500", "Per/600"],
+    perX: [100, 200, 300, 400, 500, 600],
+    notes: [
+      "汇率：1 韩元 ≈ <b class=\"rate-live\" data-rate=\"KRW\">--</b> 元（即 1 元 ≈ <b class=\"rate-live\" data-rate-inv=\"KRW\">--</b> 韩元，实时汇率，取当日行情）。",
+      "Ridi 基础每话 500/600，打折会有每话 100/200/300/400。",
+      "不按币数计价，直接按充值金额（韩元）计量；实际到账 = 充值金额 + 赠送积分。",
+      "每月 1-3 号赠送积分双倍（见「月初 1-3 号」表）。",
+      "港区通道：iOS 港区 2 港币可充 1000 韩元，无赠送，不能与月初叠加。",
+    ],
+    sections: [
+      { title: "平时（常驻赠送）", rows: [
+        { qty: "2000+60=2060",     price: 2000,   base: 2060   },
+        { qty: "5000+150=5150",    price: 5000,   base: 5150   },
+        { qty: "10000+300=10300",  price: 10000,  base: 10300  },
+        { qty: "20000+600=20600",  price: 20000,  base: 20600  },
+        { qty: "30000+1200=31200", price: 30000,  base: 31200  },
+        { qty: "50000+2000=52000", price: 50000,  base: 52000  },
+        { qty: "70000+2800=72800", price: 70000,  base: 72800  },
+        { qty: "100000+5000=105000",  price: 100000, base: 105000 },
+        { qty: "200000+10000=210000", price: 200000, base: 210000 },
+        { qty: "300000+15000=315000", price: 300000, base: 315000 },
+        { qty: "400000+20000=420000", price: 400000, base: 420000 },
+        { qty: "500000+25000=525000", price: 500000, base: 525000 }
+      ]},
+      { title: "月初 1-3 号（积分双倍）", note: "每月 1-3 号赠送积分双倍，表中为双倍后数值。", rows: [
+        { qty: "2000+120=2120",     price: 2000,   base: 2120   },
+        { qty: "5000+300=5300",     price: 5000,   base: 5300   },
+        { qty: "10000+600=10600",   price: 10000,  base: 10600  },
+        { qty: "20000+1200=21200",  price: 20000,  base: 21200  },
+        { qty: "30000+2400=32400",  price: 30000,  base: 32400  },
+        { qty: "50000+4000=54000",  price: 50000,  base: 54000  },
+        { qty: "70000+5600=75600",  price: 70000,  base: 75600  },
+        { qty: "100000+10000=110000", price: 100000, base: 110000 },
+        { qty: "200000+20000=220000", price: 200000, base: 220000 },
+        { qty: "300000+30000=330000", price: 300000, base: 330000 },
+        { qty: "400000+40000=440000", price: 400000, base: 440000 },
+        { qty: "500000+50000=550000", price: 500000, base: 550000 }
+      ]},
+      { title: "港区（2 港币 = 1000 韩元）", currency: "HKD", note: "iOS 港区 2 港币可充 1000 韩元，无赠送，不能与月初叠加。", rows: [
+        { qty: "1000", price: 2,  base: 1000 }
+      ]},
+      { title: "App Store Card（港区）", appleCard: true, currency: "HKD", mainLabel: "App Store Card（港区）",
+        note: "App Store Card（港区）：面值 50 / 100 / 150 / 200 / 250 / 300 / 400 / 500 港币，分别按 99 / 98 / 97 / 96 / 95 折出售；实付港币 = 面值 × 折扣，折合 RMB 按实时 HKD 汇率（1 港币 ≈ <b class=\"rate-live\" data-rate=\"HKD\">--</b> 元）。同一面值，行数越靠下折扣越低、实付越便宜。",
+        values: [50, 100, 150, 200, 250, 300, 400, 500],
+        discounts: [0.99, 0.98, 0.97, 0.96, 0.95] },
+      { title: "汇总对比", isSummary: true }
+    ]
+  },
+
+  "Mrblue": {
+    currency: "KRW",
+    perLabels: ["Per/100", "Per/200", "Per/300", "Per/400", "Per/500", "Per/600"],
+    perX: [100, 200, 300, 400, 500, 600],
+    notes: [
+      "汇率：1 韩元 ≈ <b class=\"rate-live\" data-rate=\"KRW\">--</b> 元（即 1 元 ≈ <b class=\"rate-live\" data-rate-inv=\"KRW\">--</b> 韩元，实时汇率，取当日行情）。",
+      "Mrblue 基础每话 500/600，打折会有每话 100/200/300/400。",
+      "不按币数计价，直接按充值金额（韩元）计量；实际到账 = 充值金额 + 里程（里程需要在 1 年内兑换，否则会失效）。",
+      "首充（第一次充值）另有额外加成，赠送率 30%–50%，仅限一次。",
+      "不固定日期会双倍赠送；月末会公布下个月的日期。",
+    ],
+    sections: [
+      { title: "首充（首次充值）", solo: true, note: "首充额外加成（적립율），仅第一次充值可享。", rows: [
+        { discount: "---", qty: "3000",               price: 3000,   base: 3000   },
+        { discount: "---", qty: "5000",               price: 5000,   base: 5000   },
+        { discount: "0.3", qty: "10000+3000=13000",   price: 10000,  base: 13000  },
+        { discount: "0.4", qty: "30000+12000=42000",  price: 30000,  base: 42000  },
+        { discount: "0.4", qty: "50000+20000=70000",  price: 50000,  base: 70000  },
+        { discount: "0.5", qty: "100000+50000=150000",  price: 100000, base: 150000 },
+        { discount: "0.5", qty: "150000+75000=225000",  price: 150000, base: 225000 },
+        { discount: "0.5", qty: "200000+100000=300000", price: 200000, base: 300000 },
+        { discount: "0.5", qty: "300000+150000=450000", price: 300000, base: 450000 }
+      ]},
+      { title: "活动期（双倍）", solo: true, note: "图中数值已是双倍后的赠送量。", rows: [
+        { qty: "3000",              price: 3000,   base: 3000   },
+        { qty: "5000",              price: 5000,   base: 5000   },
+        { qty: "10000+600=10600",   price: 10000,  base: 10600  },
+        { qty: "30000+2400=32400",  price: 30000,  base: 32400  },
+        { qty: "50000+4000=54000",  price: 50000,  base: 54000  },
+        { qty: "100000+10000=110000", price: 100000, base: 110000 },
+        { qty: "150000+15000=165000", price: 150000, base: 165000 },
+        { qty: "200000+20000=220000", price: 200000, base: 220000 },
+        { qty: "300000+30000=330000", price: 300000, base: 330000 }
+      ]},
+      { title: "平时（单倍推算）", solo: true, note: "按活动期赠送 ÷2 推算，仅供参考。", rows: [
+        { qty: "3000",              price: 3000,   base: 3000   },
+        { qty: "5000",              price: 5000,   base: 5000   },
+        { qty: "10000+300=10300",   price: 10000,  base: 10300  },
+        { qty: "30000+1200=31200",  price: 30000,  base: 31200  },
+        { qty: "50000+2000=52000",  price: 50000,  base: 52000  },
+        { qty: "100000+5000=105000",  price: 100000, base: 105000 },
+        { qty: "150000+7500=157500",  price: 150000, base: 157500 },
+        { qty: "200000+10000=210000", price: 200000, base: 210000 },
+        { qty: "300000+15000=315000", price: 300000, base: 315000 }
+      ]},
+      { title: "汇总对比", isSummary: true }
+    ]
+  }
+};
+
+/* ================= 标签分组（一个标签可含多个平台） ================= */
+const TAB_GROUPS = [
+  { name: "Lezhin 系列", members: ["Lezhin", "Lezhinus"] },
+  { name: "Bom 系列",   members: ["Bomtoon（韩bom）", "Beltoon（日bom）"] },
+  { name: "Ridi",       members: ["Ridi"] },
+  { name: "Mrblue",     members: ["Mrblue"] },
+  { name: "Tappytoon",  members: ["Tappytoon"] }
+];
+
+/* ================= 货币符号 ================= */
+const CURRENCY_SYMBOL = {
+  KRW: "₩", USD: "$", HKD: "HK$", JPY: "JP¥", CNY: "¥"
+};
+const CUR_NAME = { KRW: "韩元", USD: "美元", HKD: "港币", JPY: "日元", CNY: "RMB" };
+/* 渠道组标签：iOS 渠道单独命名，其余归为网页渠道 */
+function channelLabel(cur) {
+  if (cur === 'HKD') return 'iOS 港区';
+  if (cur === 'CNY') return 'iOS 国区';
+  return '网页（' + (CUR_NAME[cur] || cur) + '）';
+}
+
+/* ================= 状态 ================= */
+// 兜底汇率（联网失败时用，务必定期按实时值校准；2026-10-05 实测值）
+let rates = { KRW: 0.00499, USD: 6.7104, HKD: 0.8551, JPY: 0.04254, CNY: 1 };   // 口径：1 单位外币 = ? RMB（CNY 恒为 1）
+let currentPlatform = "Lezhin";      // 当前正在渲染的平台（计算 Per 值时用到）
+let currentGroup   = TAB_GROUPS[0].name;   // 当前选中的标签分组
+let currentSub     = TAB_GROUPS[0].members[0];  // 当前分组内选中的平台（二级标签）
+let showMin        = true;   // 只看最低档：每张表只留 Per 值最低的一档，历史月份合并为汇总表
+let cmpMode        = false;  // 对比模式：跨平台 / 跨分区挑最多 4 项比较（每行最多 2 个）
+let cmpPicks       = [];     // 已选中的对比项（最多 4 个）
+let cmpQty         = 0;      // 按数量对比：目标数量（买了多少个币 / 点），0 = 关闭
+let allowCombo     = true;   // 按数量对比：数量多时允许多档组合凑够（否则只认单档）
+let spendMode      = false;  // 今日花费模式（与对比模式互斥）
+let spendSel       = { p: null, oid: null, ri: 0 };   // 今日花费当前选中的 平台 / 活动 / 档次
+let spendCart      = [];     // 今日清单：[{ id, p, oid, ri }] —— 只存坐标，价格渲染时按汇率重算
+let spendSeq       = 0;
+let spendCartDate  = '';     // 当前清单属于哪一天（YYYY-MM-DD）
+let spendHistory   = {};     // 按日期存档：{ 'YYYY-MM-DD': { savedAt, total, items:[快照] } }
+let spendOpenDay   = null;   // 历史记录里当前展开的那一天
+
+/* ---------- 本地记忆：localStorage ----------
+   让这个纯 HTML 文件自带「记忆」，不联网、不需要后端 / 账号：
+   用同一个浏览器打开同一个文件，清单与按日期的历史就会一直保留。
+   局限：换浏览器 / 换设备 / 无痕模式 / 清理浏览数据都会读不到（可导出 CSV 留档）。 */
+const LS_CART = 'crc.spendCart.v1';
+const LS_HIST = 'crc.spendHistory.v1';
+function lsGet(k, def) {
+  try { const s = localStorage.getItem(k); return s ? JSON.parse(s) : def; }
+  catch (e) { return def; }
+}
+function lsSet(k, v) {
+  try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+  catch (e) { return false; }
+}
+function dayKey(d) {
+  const t = d || new Date();
+  return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+}
+const WEEK_CN = ['日', '一', '二', '三', '四', '五', '六'];
+function dayLabel(k) {
+  const m = String(k).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return k;
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  return `${+m[2]} 月 ${+m[3]} 日 · 周${WEEK_CN[d.getDay()]}`;
+}
+
+/* 启动时把上次的清单 / 历史读回来；跨天则开新的一天（昨天的清单此前已自动存进历史） */
+(function restoreSpendStore() {
+  spendCartDate = dayKey();
+  const c = lsGet(LS_CART, null);
+  if (c && Array.isArray(c.items) && c.date === spendCartDate) {
+    spendCart = c.items.filter(x => x && x.p && x.oid != null);
+    spendSeq = spendCart.reduce((m, x) => Math.max(m, +x.id || 0), 0);
+  }
+  const h = lsGet(LS_HIST, null);
+  if (h && typeof h === 'object' && !Array.isArray(h)) spendHistory = h;
+})();
+
+function groupByName(n) { return TAB_GROUPS.find(g => g.name === n) || TAB_GROUPS[0]; }
+
+/* 历史月份排序：把「离现在近的」排前面（2026.9 → 2025.9 → 2024.12），无法解析的（如「未知」）放最后。
+   常规页的历史月份网格与对比模式的选择器共用这一套，保证两处顺序一致。 */
+function monthKey(s) {
+  const m = String(s || '').match(/(\d{4})\D+(\d{1,2})/);
+  if (m) return (+m[1]) * 100 + (+m[2]);
+  const y = String(s || '').match(/(\d{4})/);
+  if (y) return (+y[1]) * 100;   // 只写了年份
+  return -1;                     // 「未知」等
+}
+function sortMonthsDesc(months) {
+  return [...(months || [])].sort((a, b) => monthKey(b.month) - monthKey(a.month));
+}
+
+/* ================= 汇率 ================= */
+async function fetchRate(currency) {
+  try {
+    const lower = currency.toLowerCase();
+    const res = await fetch(`https://cdn.jsdelivr.net/gh/NemesisX1/currency-api@main/v1/currencies/${lower}.json`);
+    const json = await res.json();
+    if (json && json[lower] && json[lower].cny) return json[lower].cny;
+    throw new Error('格式异常');
+  } catch (e) {
+    console.error(currency + ' 汇率获取失败', e);
+    return null;
+  }
+}
+
+/* ================= 计算 ================= */
+function calcRow(row, platformCurrency, sectionCurrency) {
+  const currency = row.currency || sectionCurrency || platformCurrency;
+  const rate = rates[currency] || 0;
+  const cny = rate ? row.price * rate : 0;
+  const perArr = (dataStore[currentPlatform].perX || [1,2,3]).map(x =>
+    row.base ? cny / row.base * x : 0
+  );
+  return { ...row, cny, perArr, currency };
+}
+
+function fmtDiscount(d) {
+  if (d === undefined || d === null) return "";
+  const n = parseFloat(d);
+  if (isNaN(n)) return d;
+  // 先按「千分位」四舍五入，抹掉 0.55*100 = 55.00000000000001 这类浮点误差，
+  // 否则会显示成「55.0%」「29.0%」；真有小数的（如 0.315）仍保留一位。
+  const p = Math.round(n * 1000) / 10;
+  return (Math.abs(p - Math.round(p)) < 1e-9 ? Math.round(p) : p.toFixed(1)) + '%';
+}
+
+function markBest(computed, perIndex = 0) {
+  const eps = 0.0005;
+  const minPer = Math.min(...computed.map(r => r.perArr[perIndex]));
+  return computed.map(r => Math.abs(r.perArr[perIndex] - minPer) < eps);
+}
+
+/* ================= 渲染 ================= */
+/* 单个平台的全部内容 */
+function renderPlatformBlock(pKey) {
+  currentPlatform = pKey;                 // calcRow / 各渲染函数依赖
+  const platform = dataStore[pKey];
+  if (!platform) return '';
+  const sections = showMin ? minifySections(platform) : platform.sections;
+
+  let html = '';
+
+  // 平台说明（注）
+  if (platform.notes && platform.notes.length) {
+    html += `<div class="card plat-notes">
+      <div class="card-title">注</div>
+      <ol>${platform.notes.map(n => `<li>${n}</li>`).join('')}</ol>
+    </div>`;
+  }
+
+  let buffer = [];       // 收集普通表，一起放进网格
+  let gridClass = '';    // 当前网格的额外类名
+
+  const flushBuffer = () => {
+    if (!buffer.length) return;
+    html += `<div class="simple-grid ${gridClass}">${buffer.map(s =>
+      `<div class="grid-cell">
+        <div class="section-title">${s.title}</div>
+        ${(s._render || renderSimpleTable)(s, platform)}
+      </div>`
+    ).join('')}</div>`;
+    buffer = [];
+    gridClass = '';
+  };
+
+  sections.forEach(section => {
+    if (section.isMonths) {
+      flushBuffer();
+      html += `<div class="section-title">${section.title}</div>`;
+      html += `<div class="month-grid">${sortMonthsDesc(section.months).map(m =>
+        renderMonthCard(m, platform, section.monthNote, section.grabDiscounts)
+      ).join('')}</div>`;
+    } else if (section.isSummary) {
+      flushBuffer();
+      html += `<div class="section-title">${section.title}</div>`;
+      html += renderSummary(platform);
+    } else if (section.isPoints) {
+      if (section.inline) {
+        // 与前面的表并排同一行（如 Lezhinus：首充 / 次充 / 积分）
+        gridClass = 'is-three';
+        buffer.push({ ...section, _render: renderPointsTable });
+        if (section.breakAfter) flushBuffer();
+      } else {
+        flushBuffer();
+        html += `<div class="section-title">${section.title}</div>`;
+        html += renderPointsTable(section, platform);
+      }
+    } else if (section.isCoupons) {
+      flushBuffer();
+      html += `<div class="section-title">${section.title}</div>`;
+      html += renderCouponTable(section, platform);
+    } else if (section.appleCard) {
+      // App Store Card：折扣为行 × 面值为列的矩阵表，独占整宽
+      flushBuffer();
+      html += `<div class="section-title">${section.title}</div>`;
+      html += renderAppleCard(section, platform);
+    } else if (section.solo) {
+      // 独占一行、整宽显示，不与其它表并列
+      flushBuffer();
+      html += `<div class="section-title">${section.title}</div>`;
+      html += renderSimpleTable(section, platform);
+    } else {
+      buffer.push(section);
+    }
+  });
+  flushBuffer();
+
+  return html;
+}
+
+/* 当前标签分组：按顺序渲染组内各平台 */
+/* 只看最低档：压缩页面长度 */
+function minifySections(platform) {
+  const pickMin = (rows, secCur) => {
+    if (!rows || rows.length <= 1) return rows;
+    const comp = rows.map(r => calcRow(r, platform.currency, secCur));
+    let bi = 0;
+    comp.forEach((c, i) => { if (c.perArr[0] < comp[bi].perArr[0]) bi = i; });
+    return [rows[bi]];
+  };
+
+  const out = [];
+  platform.sections.forEach(sec => {
+    if (sec.isMonths) {
+      // 每个月份只保留最低档，合并成一张汇总表
+      const rows = sec.months.map(m => {
+        const secCur = platform.currency;
+        const picked = pickMin(m.rows, secCur)[0];
+        return {
+          discount: picked.discount,
+          qty: m.month + ' · ' + picked.qty,
+          price: picked.price, base: picked.base,
+          tag: picked.tag, limited: picked.limited
+        };
+      });
+      out.push({ title: sec.title + '（每月最低档汇总）', note: sec.monthNote, rows });
+    } else if (sec.isSummary || !sec.rows) {
+      out.push(sec);
+    } else {
+      out.push(Object.assign({}, sec, { rows: pickMin(sec.rows, sec.currency || platform.currency) }));
+    }
+  });
+  return out;
+}
+
+function renderContent() {
+  const box = document.getElementById('content');
+  const group = groupByName(currentGroup);
+  if (!group.members.includes(currentSub)) currentSub = group.members[0];
+  const pKey = currentSub;
+
+  renderSubTabs();
+  syncToolButtons();   // 顶栏按钮名随模式变（常规 / 对比 / 今日花费）
+
+  const html = spendMode
+    ? `<div class="spend-wrap">${renderSpend()}</div>`
+    : cmpMode
+    ? `<div class="cmp-wrap">${renderCompare()}</div>`
+    : `<div class="plat-block">
+      ${renderBestBar(pKey)}
+      ${renderPlatformBlock(pKey)}
+    </div>`;
+
+  box.innerHTML = html || '<div class="loading">暂无数据</div>';
+  updateRateNotes();   // 说明里的实时汇率
+}
+
+/* 本平台 Per 值最低的几档速览 */
+function renderBestBar(pKey) {
+  const platform = dataStore[pKey];
+  if (!platform) return '';
+  const perX = platform.perX || [1, 2, 3];
+  const per0 = perX[0];
+  const label = (platform.perLabels && platform.perLabels[0]) || 'Per';
+
+  const items = [];
+  (platform.sections || []).forEach(sec => {
+    if (sec.isMonths) {
+      (sec.months || []).forEach(m => (m.rows || []).forEach(r =>
+        items.push({ where: sec.title + ' · ' + m.month, r, cur: platform.currency, factor: 1 })));
+    } else if (sec.rows) {
+      sec.rows.forEach(r => items.push({ where: sec.title, r,
+        cur: r.currency || sec.currency || platform.currency, factor: sec.priceFactor || 1 }));
+    }
+  });
+
+  const list = items.map(it => {
+    const rate = rates[it.cur] || 0;
+    const f = it.factor || 1;
+    const cny  = it.r.price * rate;          // 折前
+    const base = it.r.base || 1;
+    return { where: it.where, r: it.r, cur: it.cur, cny, cnyEff: cny * f, factor: f,
+             val: cny * f / base * per0 };
+  }).filter(x => x.val > 0).sort((a, b) => a.val - b.val).slice(0, 3);
+
+  if (!list.length) return '';
+  const symOf = c => (c === 'CNY' ? '\u00a5' : (CURRENCY_SYMBOL[c] || ''));
+
+  return `<div class="bestbar">` + list.map((x, i) => {
+    const qtyTxt = x.r.tier ? `${x.r.tier} \u79ef\u5206 / ${x.r.qty}` : (x.r.qty || '');
+    return `<div class="bb-item">
+      <div class="bb-title">${i === 0 ? '\u672c\u5e73\u53f0\u6700\u4f4e' : '\u7b2c ' + (i + 1) + ' \u4f4e'} \u00b7 ${label}</div>
+      <div class="bb-val">\u00a5${x.val.toFixed(2)}</div>
+      <div class="bb-meta">${x.where}<br>${qtyTxt} \uff5c ${symOf(x.cur)}${Number(x.r.price).toLocaleString()} \u2248 \u00a5${x.cny.toFixed(2)}${x.factor !== 1 ? `\uff08\u6298\u540e \u00a5${x.cnyEff.toFixed(2)}\uff09` : ''}</div>
+    </div>`;
+  }).join('')
+    + `<div class="bb-note">口径：本平台\u5168\u90e8\u6863\u4f4d\uff08\u542b\u5386\u53f2\u6708\u4efd\u6d3b\u52a8\u4ef7\uff09\u4e2d ${label} \u6700\u4f4e\u7684\u4e09\u6863\uff0c\u6309\u5f53\u524d\u6c47\u7387\u6298\u7b97RMB\u3002${list.some(x => x.factor !== 1) ? '\u5e26\u6298\u7684\u6863\u4f4d\uff08\u5982\u65b0\u4eba\u4e94\u6298\u5377\uff09\u6309\u6298\u540e\u4ef7\u8ba1\u3002' : ''}</div>`
+    + `</div>`;
+}
+
+/* 说明里的实时汇率占位符 */
+function updateRateNotes() {
+  document.querySelectorAll('[data-rate]').forEach(el => {
+    const r = rates[el.dataset.rate];
+    if (r) el.textContent = r.toFixed(5);
+  });
+  document.querySelectorAll('[data-rate-inv]').forEach(el => {
+    const r = rates[el.dataset.rateInv];
+    if (r) el.textContent = (1 / r).toFixed(2);
+  });
+}
+
+/* App Store Card：折扣（纵）× 面值（横）的矩阵表，每格「实付港币 + ≈¥折合」 */
+function renderAppleCard(section) {
+  const values = section.values || [];
+  const discounts = section.discounts || [];
+  const hkRate = rates.HKD || 0;
+  const sym = CURRENCY_SYMBOL.HKD || 'HK$';
+
+  const head = `<tr><th class="c-text">\u6298\u6263 \\ \u9762\u503c</th>`
+    + values.map(v => `<th class="c-price">${sym}${v.toLocaleString()}</th>`).join('')
+    + `</tr>`;
+
+  const body = discounts.map(d => {
+    const cells = values.map(v => {
+      const pay = Math.round(v * d * 100) / 100;  // 实付港币（抹掉浮点毛刺，如 300*0.97）
+      const cny = pay * hkRate;                   // 折合 RMB
+      return `<td class="c-price">${sym}${pay.toLocaleString()}<br>`
+        + `<span class="price-num">\u2248 <span class="cny">\u00a5${cny.toFixed(2)}</span></span></td>`;
+    }).join('');
+    return `<tr><td class="c-text">${fmtDiscount(d)}</td>${cells}</tr>`;
+  }).join('');
+
+  const colgroup = `<colgroup><col style="width:12%">`
+    + values.map(() => '<col style="width:11%">').join('')
+    + `</colgroup>`;
+
+  return `<div class="card">`
+    + `${section.note ? `<div class="card-note">${section.note}</div>` : ''}`
+    + `<table>${colgroup}<thead>${head}</thead><tbody>${body}</tbody></table></div>`;
+}
+
+/* 简单表（可选：右侧附一组「iOS 港区」列） */
+function renderSimpleTable(section, platform) {
+  const rows = section.rows;
+  // 整表打折（如 Beltoon「新人五折卷」）：Price、5折券列、Per 全部按折后价算
+  const factor = section.priceFactor || 1;
+  const computed = rows.map(r => {
+    const c = calcRow(r, platform.currency, section.currency);
+    c.cnyRaw = c.cny;                 // 折前价：Price 列仍显示原价，只有「5折券」列与 Per 用折后价
+    if (factor !== 1) { c.cny *= factor; c.perArr = c.perArr.map(v => v * factor); }
+    return c;
+  });
+  const hasDiscount = rows.some(r => r.discount !== undefined);
+  const bestFlags = markBest(computed);
+  const perLabels = platform.perLabels;
+  const perX = platform.perX || [1, 2, 3];
+  const grabList = section.grabDiscounts || [];   // 需要抢的折扣档位（如 70% / 60%）
+
+  // iOS 国区（本身以 RMB 计价，数量一般与网页档相同，单独一组；要求每档都有价才成组）
+  const hasIos = rows.length > 0 && rows.every(r => r.iosPrice !== undefined);
+  let iosBestFlags = [];
+  if (hasIos) {
+    const per = rows.map(r => r.iosPrice / (r.iosBase || r.base || 1) * perX[0]);
+    const min = Math.min(...per);
+    iosBestFlags = per.map(v => Math.abs(v - min) < 0.0005);
+  }
+
+  // iOS 港区（数量 / 价格与各自主渠道不同，单独一组）
+  const hasHk = !!section.hk && rows.some(r => r.hkPrice !== undefined);
+  let hkBestFlags = [];
+  if (hasHk) {
+    const hkPer = rows.map(r => (r.hkPrice * (rates.HKD || 0)) / (r.hkBase || r.base || 1) * perX[0]);
+    const min = Math.min(...hkPer);
+    hkBestFlags = hkPer.map(v => Math.abs(v - min) < 0.0005);
+  }
+
+  const mainSep = hasDiscount || hasHk || hasIos ? ' grp-sep' : '';   // 主渠道组前是否画竖线
+
+  const body = computed.map((r, i) => {
+    const isBest = bestFlags[i];
+    const isGrab = r.limited || grabList.includes(String(r.discount));
+    const discountCell = hasDiscount
+      ? `<td class="c-text">${fmtDiscount(r.discount)}${isBest ? '<span class="badge">Best</span>' : ''}</td>`
+      : '';
+    const qtyInner = `${r.qty}${/p\b/i.test(String(r.qty)) ? '<span class="tag gold">p = 积分</span>' : ''}${isGrab ? '<span class="tag limited">需抢</span>' : ''}${r.tag ? `<span class="tag gold">${r.tag}</span>` : ''}${!hasDiscount && isBest ? '<span class="badge">Best</span>' : ''}`;
+    const specialCell = section.hasSpecial
+      ? `<td class="c-price">${section.priceFactor
+          ? '\u00a5' + r.cny.toFixed(2)
+          : (typeof r.specialPrice === 'number' ? '\u00a5' + r.specialPrice : r.specialPrice)}</td>`
+      : '';
+    const perCells = r.perArr.map(p => `<td class="c-per">${p.toFixed(2)}</td>`).join('');
+
+    let iosCell = '';
+    if (hasIos) {
+      const iosBase = r.iosBase || r.base || 1;
+      const iosPerCells = perX.map(x => `<td class="ios-col c-per">${(r.iosPrice / iosBase * x).toFixed(2)}</td>`).join('');
+      iosCell = `<td class="ios-col c-qty grp-sep">${r.iosQty !== undefined ? r.iosQty : r.qty}</td>`
+        + `<td class="ios-col c-price">\u00a5${r.iosPrice.toLocaleString()}`
+        + `${iosBestFlags[i] ? '<span class="badge">Best</span>' : ''}</td>${iosPerCells}`;
+    }
+
+    let hkCell = '';
+    if (hasHk) {
+      const hkCny = (r.hkPrice || 0) * (rates.HKD || 0);
+      const hkBase = r.hkBase || r.base || 1;
+      const hkPerCells = perX.map(x => `<td class="hk-col c-per">${(hkCny / hkBase * x).toFixed(2)}</td>`).join('');
+      hkCell = `<td class="hk-col c-qty grp-sep">${r.hkQty !== undefined ? r.hkQty : r.qty}</td>`
+        + `<td class="hk-col c-price">HK$${(r.hkPrice || 0).toLocaleString()}<br>`
+        + `<span class="price-num">\u2248 <span class="cny">\u00a5${hkCny.toFixed(2)}</span></span>`
+        + `${hkBestFlags[i] ? '<span class="badge">Best</span>' : ''}</td>${hkPerCells}`;
+    }
+
+    const cls = [isBest ? 'best' : '', isGrab ? 'limited' : ''].filter(Boolean).join(' ');
+    const sym = CURRENCY_SYMBOL[r.currency] || '';
+    const qtyCell = `<td class="c-qty${mainSep}">${qtyInner}</td>`;
+    // 本身就以RMB计价（国区）时，不再重复显示「≈ ¥x」第二行
+    const priceRmb = r.cnyRaw !== undefined ? r.cnyRaw : r.cny;
+    const priceCell = r.currency === 'CNY'
+      ? `${sym}${r.price.toLocaleString()}`
+      : `${sym}${r.price.toLocaleString()}<br><span class="price-num">\u2248 <span class="cny">\u00a5${priceRmb.toFixed(2)}</span></span>`;
+    return `<tr class="${cls}">
+      ${discountCell}${qtyCell}
+      <td class="c-price">${priceCell}</td>
+      ${specialCell}
+      ${perCells}
+      ${iosCell}
+      ${hkCell}
+    </tr>`;
+  }).join('');
+
+  const headDiscountRow = hasDiscount ? '<th rowspan="2" class="c-text">\u6298\u6263</th>' : '';
+  const headSpecial = section.hasSpecial ? '<th class="c-price">5\u6298\u5377/rmb</th>' : '';
+  const headPer = perLabels.map(l => `<th class="c-per">${l}</th>`).join('');
+  const mainLabel = section.mainLabel || channelLabel(section.currency || platform.currency);
+
+  // 渠道组栏：数量 / Price /（5折券）/ Per×N 全部收在所属渠道栏下
+  const nMain = 2 + (section.hasSpecial ? 1 : 0) + perLabels.length;
+  const nIos  = 2 + perLabels.length;
+  const nHk   = 2 + perLabels.length;
+  const thead = `<tr>
+      ${headDiscountRow}
+      <th colspan="${nMain}" class="grp-main">${mainLabel}</th>
+      ${hasIos ? `<th colspan="${nIos}" class="grp-ios grp-sep">iOS \u56fd\u533a</th>` : ''}
+      ${hasHk ? `<th colspan="${nHk}" class="grp-hk grp-sep">iOS \u6e2f\u533a</th>` : ''}
+    </tr>
+    <tr>
+      <th class="c-qty${mainSep}">\u6570\u91cf</th><th class="c-price">Price</th>${headSpecial}${headPer}
+      ${hasIos ? `<th class="ios-col c-qty grp-sep">\u6570\u91cf</th><th class="ios-col c-price">Price</th>${perLabels.map(l => `<th class="ios-col c-per">${l}</th>`).join('')}` : ''}
+      ${hasHk ? `<th class="hk-col c-qty grp-sep">\u6570\u91cf</th><th class="hk-col c-price">Price</th>${perLabels.map(l => `<th class="hk-col c-per">${l}</th>`).join('')}` : ''}
+    </tr>`;
+
+  // 列宽：数量 / Price / Per 各渠道组同比例，组与组宽度一致
+  const mainCols = `<col style="width:10%"><col style="width:16%">`
+    + (section.hasSpecial ? '<col style="width:10%">' : '')
+    + perLabels.map(() => '<col style="width:6%">').join('');
+  const iosCols = `<col style="width:10%"><col style="width:16%">`
+    + perLabels.map(() => '<col style="width:6%">').join('');
+  const hkCols = `<col style="width:10%"><col style="width:16%">`
+    + perLabels.map(() => '<col style="width:6%">').join('');
+  const colgroup = `<colgroup>${hasDiscount ? '<col style="width:8%">' : ''}${mainCols}${hasIos ? iosCols : ''}${hasHk ? hkCols : ''}</colgroup>`;
+
+  return `<div class="card">${section.note ? `<div class="card-note">${section.note}</div>` : ''}<table>${colgroup}
+    <thead>${thead}</thead>
+    <tbody>${body}</tbody>
+  </table></div>`;
+}
+
+/* 券后价表：每组一张券，列为 Price（₩ + 实时汇率折算 ¥）+ Per/1c，并标出每组的最优档 */
+function couponApply(price, c) {
+  if (price < c.threshold) return null;                        // 未达使用门槛
+  return c.kind === 'minus' ? price - c.value : price * c.value;
+}
+
+function renderCouponTable(section, platform) {
+  const rows = section.rows || [];
+  const coupons = section.coupons || [];
+  const cur = section.currency || platform.currency;
+  const rate = rates[cur] || 0;
+  const sym = CURRENCY_SYMBOL[cur] || '';
+  const perLabel = (platform.perLabels && platform.perLabels[0]) || 'Per/1c';
+  const perX0 = (platform.perX && platform.perX[0]) || 1;
+  const groups = [{ label: section.mainLabel || '原价', cls: 'grp-main', c: null }]
+    .concat(coupons.map(c => ({ label: c.label, cls: 'grp-coupon', c })));
+
+  const priceOf = (r, g) => (g.c ? couponApply(r.price, g.c) : r.price);
+  const perOf = (p, r) => (rate ? p * rate / (r.base || 1) * perX0 : 0);
+
+  // 每个渠道组各自的最优档（Per/1c 最低的一档）
+  const bestFlags = groups.map(g => {
+    const per = rows.map(r => {
+      const p = priceOf(r, g);
+      return (p === null || !rate) ? Infinity : perOf(p, r);
+    });
+    const min = Math.min(...per);
+    return per.map(v => isFinite(v) && v === min);
+  });
+
+  // 整行都最优（各券组的最优档恰好是同一档）→ 套用和其它表一样的绿色最优行
+  const rowBest = rows.map((r, i) => bestFlags[0][i] && bestFlags.every(f => f[i]));
+
+  const body = rows.map((r, i) => {
+    // 该档最划算的券（只比券，原价不参与）
+    let best = null;
+    coupons.forEach(c => {
+      const p = couponApply(r.price, c);
+      if (p === null || !rate) return;
+      const u = perOf(p, r);
+      if (!best || u < best.u) best = { u, label: c.label };
+    });
+
+    const tds = groups.map((g, gi) => {
+      const p = priceOf(r, g);
+      const sep = gi === 0 ? '' : ' grp-sep';
+      if (p === null || !rate) {
+        return `<td class="c-price na${sep}">—</td><td class="c-per na">—</td>`;
+      }
+      const cny = p * rate;
+      const win = bestFlags[gi][i];
+      const winCls = win ? ' cell-best' : '';
+      return `<td class="c-price${sep}${winCls}">${sym}${p.toLocaleString()}<br>`
+        + `<span class="price-num">≈ <span class="cny">¥${cny.toFixed(2)}</span></span>`
+        + `${win ? '<span class="badge">Best</span>' : ''}</td>`
+        + `<td class="c-per${winCls}">${perOf(p, r).toFixed(2)}</td>`;
+    }).join('');
+
+    return `<tr class="${rowBest[i] ? 'best' : ''}">
+      <td class="c-text">${r.qty}</td>
+      ${tds}
+      <td class="c-text grp-sep">${best ? best.label : '无可用券'}</td>
+    </tr>`;
+  }).join('');
+
+  const head = `<tr>
+      <th rowspan="2" class="c-text">数量</th>
+      ${groups.map((g, gi) => `<th colspan="2" class="${g.cls}${gi ? ' grp-sep' : ''}">${g.label}</th>`).join('')}
+      <th rowspan="2" class="c-text grp-sep">最划算券</th>
+    </tr>
+    <tr>
+      ${groups.map(g => `<th class="c-price" data-g="${g.label}">Price</th>`
+        + `<th class="c-per" data-g="${g.label}">${perLabel}</th>`).join('')}
+    </tr>`;
+
+  const colgroup = `<colgroup><col style="width:11%">`
+    + groups.map(() => '<col style="width:9%"><col style="width:6%">').join('')
+    + `<col style="width:14%"></colgroup>`;
+
+  return `<div class="card">${section.note ? `<div class="card-note">${section.note}</div>` : ''}<table>${colgroup}
+    <thead>${head}</thead><tbody>${body}</tbody></table></div>`;
+}
+
+/* 积分表：按渠道分组（网页 / iOS 国区 / iOS 港区） */
+function renderPointsTable(section, platform) {
+  const rows = section.rows;
+  const perX = platform.perX || [1, 2, 3];
+  const perLabels = platform.perLabels;
+  const nCols = perLabels.length;
+
+  const hasIos = rows.some(r => r.iosPrice !== undefined);
+  const hasHk  = rows.some(r => r.hkPrice !== undefined);
+  const mainCur = section.currency || platform.currency;
+  const mainLabel = section.mainLabel !== undefined ? section.mainLabel : "网页（" + mainCur + "）";
+
+  const rateOf = c => (c === 'CNY' ? 1 : (rates[c] || 0));
+  const symOf  = c => (c === 'CNY' ? '¥' : (CURRENCY_SYMBOL[c] || ''));
+
+  const chans = [{
+    label: mainLabel, cur: mainCur, cls: '', grp: 'grp-main',
+    get: r => r.price, base: r => r.base, qty: r => r.qty
+  }];
+  if (hasIos) chans.push({
+    label: 'iOS 国区', cur: 'CNY', cls: 'ios-col', grp: 'grp-ios',
+    get: r => r.iosPrice, base: r => r.base, qty: r => r.qty
+  });
+  const hkOwnQty = rows.some(r => r.hkQty !== undefined);   // 港区币数与网页档不同时，港区组单独列数量
+  if (hasHk) chans.push({
+    label: 'iOS 港区', cur: 'HKD', cls: 'hk-col', grp: 'grp-hk', ownQty: hkOwnQty,
+    get: r => r.hkPrice, base: r => r.hkBase || r.base, qty: r => r.hkQty || r.qty
+  });
+
+  // 每个渠道各自的最优行
+  const bestFlags = chans.map(ch => {
+    const per = rows.map(r => (ch.get(r) * rateOf(ch.cur)) / (ch.base(r) || 1) * perX[0]);
+    const min = Math.min(...per);
+    return per.map(v => Math.abs(v - min) < 0.0005);
+  });
+
+  // 列宽：数量 / Price / Per 各渠道组取同一比例，三组宽度一致
+  const colgroup = `<colgroup><col style="width:7%">${chans.map(() =>
+    `<col style="width:6%"><col style="width:11%">${perLabels.map(() => '<col style="width:4%">').join('')}`
+  ).join('')}</colgroup>`;
+
+  const clsOf = (ch, ...extra) => [ch.cls, ...extra].filter(Boolean).join(' ');
+
+  const body = rows.map((r, i) => {
+    const tds = chans.map((ch, ci) => {
+      const price = ch.get(r);
+      const base = ch.base(r) || 1;
+      const cny = price * rateOf(ch.cur);
+      const perCells = perX.map(x => `<td class="${clsOf(ch, 'c-per')}">${(cny / base * x).toFixed(2)}</td>`).join('');
+      const isBest = bestFlags[ci][i];
+      return `<td class="${clsOf(ch, 'c-qty', 'grp-sep')}">${ch.qty(r)}</td>`
+        + `<td class="${clsOf(ch, 'c-price')}">${symOf(ch.cur)}${price.toLocaleString()}<br>`
+        + `<span class="price-num">≈ <span class="cny">¥${cny.toFixed(2)}</span></span>`
+        + `${isBest ? '<span class="badge">Best</span>' : ''}</td>${perCells}`;
+    }).join('');
+    return `<tr class="${bestFlags[0][i] ? 'best' : ''}">
+      <td class="c-text">${r.tier}</td>
+      ${tds}
+    </tr>`;
+  }).join('');
+
+  // 每个渠道组都是：数量 + Price + Per×N，列数与宽度完全一致
+  const span = 2 + nCols;
+  const thead = `<tr>
+      <th rowspan="2" class="c-text">积分</th>
+      ${chans.map(c => `<th colspan="${span}" class="${c.grp} grp-sep">${c.label}</th>`).join('')}
+    </tr>
+    <tr>
+      ${chans.map(c => {
+        return `<th class="${clsOf(c, 'c-qty', 'grp-sep')}">\u6570\u91cf</th><th class="${clsOf(c, 'c-price')}">Price</th>`
+          + perLabels.map(l => `<th class="${clsOf(c, 'c-per')}">${l}</th>`).join('');
+      }).join('')}
+    </tr>`;
+
+  return `<div class="card">${section.note ? `<div class="card-note">${section.note}</div>` : ''}<table>${colgroup}<thead>${thead}</thead><tbody>${body}</tbody></table></div>`;
+}
+
+/* 历史月份 */
+function renderMonthCard(m, platform, monthNote, grabDiscounts) {
+  const computed = m.rows.map(r => calcRow(r, platform.currency));
+  const bestFlags = markBest(computed, 0);
+  const perLabels = platform.perLabels;
+  const grabList = grabDiscounts || [];   // 这些折扣档位需要抢（如 70% / 60%）
+
+  const body = computed.map((r, i) => {
+    const isBest = bestFlags[i];
+    const perCells = r.perArr.map(p => `<td class="c-per">${p.toFixed(2)}</td>`).join('');
+    const isGrab = r.limited || grabList.includes(String(r.discount));
+    const cls = [isBest ? 'best' : '', isGrab ? 'limited' : ''].filter(Boolean).join(' ');
+    return `<tr class="${cls}">
+      <td class="c-text">${fmtDiscount(r.discount)}${isGrab ? '<span class="tag limited">需抢</span>' : ''}${r.tag ? `<span class="tag gold">${r.tag}</span>` : ''}${isBest ? '<span class="badge">Best</span>' : ''}</td>
+      <td class="c-qty">${r.qty}</td>
+      <td class="c-price">₩${r.price.toLocaleString()}<br><span class="price-num">≈ <span class="cny">¥${r.cny.toFixed(2)}</span></span></td>
+      ${perCells}
+    </tr>`;
+  }).join('');
+
+  const headPer = perLabels.map(l => `<th class="c-per">${l}</th>`).join('');
+
+  // 月份备注：月份自带备注 + 该分区的统一备注（如“仅限网页版…”）
+  let noteText = m.note || '';
+  if (monthNote) {
+    noteText = noteText.includes('网页版') ? noteText
+             : (noteText ? noteText + ' ｜ ' + monthNote : monthNote);
+  }
+
+  return `<div class="card">
+    <div class="card-title">${m.month}</div>
+    ${noteText ? `<div class="card-note">${noteText}</div>` : ''}
+    <table>
+      <thead>
+        <tr><th rowspan="2" class="c-text">\u6298\u6263</th><th colspan="${2 + perLabels.length}" class="grp-main">${channelLabel(platform.currency)}</th></tr>
+        <tr><th class="c-qty">\u6570\u91cf</th><th class="c-price">Price</th>${headPer}</tr>
+      </thead>
+      <tbody>${body}</tbody>
+    </table>
+  </div>`;
+}
+
+/* ================= 平台切换 ================= */
+function renderPlatformTabs() {
+  const nav = document.getElementById('platforms');
+  nav.innerHTML = TAB_GROUPS.map(g =>
+    `<button class="btn platform ${g.name === currentGroup ? 'active' : ''}" data-g="${g.name}">${g.name}</button>`
+  ).join('');
+  nav.querySelectorAll('.btn').forEach(b => {
+    b.onclick = () => {
+      currentGroup = b.dataset.g;
+      currentSub   = groupByName(currentGroup).members[0];
+      renderPlatformTabs();
+      renderContent();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  });
+}
+
+/* 二级标签：分组内选择具体平台（组内只有 1 个平台时不显示） */
+function renderSubTabs() {
+  const el = document.getElementById('subtabs');
+  if (!el) return;
+  if (spendMode) { el.innerHTML = ''; el.style.display = 'none'; return; }   // 今日花费自带平台下拉，隐藏二级标签
+  const group = groupByName(currentGroup);
+  if (group.members.length <= 1) { el.innerHTML = ''; el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  el.innerHTML = group.members.map(m =>
+    `<button class="btn sub ${m === currentSub ? 'active' : ''}" data-p="${m}">${m}</button>`
+  ).join('');
+  el.querySelectorAll('.btn').forEach(b => {
+    b.onclick = () => {
+      currentSub = b.dataset.p;
+      renderPlatformTabs();
+      renderContent();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  });
+}
+
+/* 汇总对比：各渠道取最优档，折算 Per/100-600 韩元的RMB价 */
+const SUMMARY_SOURCES = [
+  { label: "Ridi · 平时",              platform: "Ridi",   section: "平时（常驻赠送）" },
+  { label: "Ridi · 月初1-3号（双倍）",  platform: "Ridi",   section: "月初 1-3 号（积分双倍）" },
+  { label: "Ridi · 港区（2港币=1000韩元）", platform: "Ridi", section: "港区（2 港币 = 1000 韩元）" },
+  { label: "Mrblue · 首充（30%–50%加成）", platform: "Mrblue", section: "首充（首次充值）" },
+  { label: "Mrblue · 活动期（双倍）",   platform: "Mrblue", section: "活动期（双倍）" },
+  { label: "Mrblue · 平时（单倍）",     platform: "Mrblue", section: "平时（单倍推算）" }
+];
+
+function renderSummary(platform) {
+  const perX = platform.perX;
+  const rows = SUMMARY_SOURCES.map(src => {
+    const p = dataStore[src.platform];
+    if (!p) return null;
+    const sec = p.sections.find(s => s.title === src.section);
+    if (!sec) return null;
+    let best = null;
+    sec.rows.forEach(r => {
+      if (!r.base) return;
+      const currency = r.currency || sec.currency || p.currency;
+      const rate = rates[currency] || 0;
+      if (!rate) return;
+      const u = r.price * rate / r.base;   // 每 1 韩元等值的RMB成本
+      if (!best || u < best.u) best = { u, tier: r.qty };
+    });
+    return best ? { ...src, best } : null;
+  }).filter(Boolean);
+
+  const headPer = perX.map(x => `<th class="c-per">Per/${x}</th>`).join('');
+  const body = rows.map(r => `<tr>
+    <td class="c-text">${r.label}</td>
+    <td class="c-qty">${r.best.tier}</td>
+    ${perX.map(x => `<td class="c-per">¥${(r.best.u * x).toFixed(2)}</td>`).join('')}
+  </tr>`).join('');
+
+  return `<div class="card"><table>
+    <thead><tr><th class="c-text">渠道</th><th class="c-qty">采用档位（该渠道最优）</th>${headPer}</tr></thead>
+    <tbody>${body}</tbody>
+  </table></div>`;
+}
+
+/* ================= 对比模式（最多 4 项，可跨平台 / 跨分区；每行最多并排 2 个） ================= */
+/* 所有可对比项：平台 × 分区（历史月份拆成每个月一项；汇总表除外） */
+function compareOptions() {
+  const out = [];
+  Object.keys(dataStore).forEach(p => {
+    const plat = dataStore[p];
+    (plat.sections || []).forEach((sec, si) => {
+      if (sec.isSummary) return;
+      if (sec.isMonths) {
+        // 历史月份：近的排前面，与常规页顺序一致（id 仍用原始下标，保证前后两次 render 稳定）
+        sortMonthsDesc(sec.months).forEach(m => {
+          const mi = (sec.months || []).indexOf(m);
+          out.push({
+            id: p + '#' + si + '#m' + mi, p, sec, month: m, rows: m.rows || [],
+            label: '历史月份 · ' + m.month
+          });
+        });
+      } else if (sec.rows && sec.rows.length) {
+        out.push({ id: p + '#' + si, p, sec, rows: sec.rows, label: sec.title });
+      }
+    });
+  });
+  return out;
+}
+
+/* 把一个对比项算成：每档 { 数量 / 原价或券后价 / 折合RMB / Per[第一个指标] } */
+function optionCalc(opt) {
+  const plat = dataStore[opt.p];
+  const sec = opt.sec || {};
+  const cur = sec.currency || plat.currency;
+  const rate = rates[cur] || 0;
+  const x0 = (plat.perX || [1])[0];
+  const perLabel = (plat.perLabels && plat.perLabels[0]) || 'Per';
+
+  const rows = (opt.rows || []).map(r => {
+    let price = r.price, coupon = '';
+    if (sec.isCoupons) {                       // 券后价分区：取该档最划算的券
+      let bc = null;
+      (sec.coupons || []).forEach(c => {
+        const p = couponApply(r.price, c);
+        if (p !== null && (!bc || p < bc.p)) bc = { p, c };
+      });
+      if (bc) { price = bc.p; coupon = bc.c.label; }
+    }
+    const base = r.base || 1;
+    const rCur = r.currency || cur;
+    const rRate = rates[rCur] || rate;
+    const f = sec.priceFactor || 1;              // 整表打折的分区（如 Beltoon 新人五折卷）按折后价参与对比
+    const cny = rRate ? price * rRate * f : 0;
+    return { r, price, cny, coupon, cur: rCur, factor: f, per: rRate ? cny / base * x0 : Infinity };
+  });
+
+  let bi = 0;
+  rows.forEach((x, i) => { if (x.per < rows[bi].per) bi = i; });
+  return { plat, sec, cur, x0, perLabel, rows, best: rows[bi], bestIdx: bi };
+}
+
+/* 对比卡内直接复用常规页的表格渲染函数：
+   这样每张卡都显示该分区的**完整原表格**（网页 / iOS 国区 / iOS 港区 各栏、券后价的每张券栏目…），
+   样式与常规页完全一致，不会再出现「只显示第一个栏目的价格」的情况。 */
+function renderPickTable(pick) {
+  const plat = dataStore[pick.p];
+  if (!plat) return '';
+  currentPlatform = pick.p;              // calcRow 依赖 currentPlatform 取 perX
+  const sec = pick.sec || {};
+  if (pick.month) return renderMonthCard(pick.month, plat, sec.monthNote, sec.grabDiscounts);
+  if (sec.isCoupons) return renderCouponTable(sec, plat);
+  if (sec.isPoints) return renderPointsTable(sec, plat);
+  return renderSimpleTable(sec, plat);
+}
+
+/* ===== 按数量对比：给定「目标数量 N」，求该分区买到 ≥ N 个的最便宜档位 =====
+   单位口径：r.base 就是该档位的「实得数量」（数量里 = 号后的总数，例如 20+10=30 → 30）。
+   注意 Lezhin / Lezhinus 首充的 base 只算永久币（399+16000p → 399），带 p 的积分不算。 */
+
+/* 把一个分区折成「可选档位」列表（去重，按 ratio 用到的 base / cny） */
+function qtyTiers(d) {
+  const seen = new Set(), out = [];
+  d.rows.forEach(x => {
+    const base = +x.r.base || 0;
+    const cny = +x.cny || 0;
+    if (base <= 0 || cny <= 0) return;
+    const key = base + '@' + cny.toFixed(4);
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ base, cny, qty: x.r.qty, coupon: x.coupon || '', up: cny / base });
+  });
+  return out;
+}
+/* 能一档凑够 need 的最便宜档位 */
+function cheapestAtLeast(tiers, need) {
+  let b = null;
+  tiers.forEach(t => { if (t.base >= need && (!b || t.cny < b.cny)) b = t; });
+  return b;
+}
+/* 合并同一个档位的重复次数（把 8 次「200+200=400」并成 8 × …） */
+function mergeParts(list) {
+  const map = new Map();
+  list.forEach(p => {
+    const k = p.t.base + '@' + p.t.cny.toFixed(4);
+    if (map.has(k)) map.get(k).n += p.n; else map.set(k, { n: p.n, t: p.t });
+  });
+  const out = [...map.values()];
+  out.sort((a, b) => b.t.base - a.t.base);
+  return out;
+}
+function partsText(parts) {
+  return parts.map(p => (p.n > 1 ? p.n + ' × ' : '') + p.t.qty).join(' + ');
+}
+
+/* 组合凑够 N 个：返回 { cost, got, parts }，无解返回 null。
+   做法是精确的 —— 最优解一定可以拆成「一堆「单档 < N」的档位凑到 x ≤ N」+「最后一档补足」，
+   所以对 base < N 的档位做完全背包 DP（0..N），再枚举最后一档取最小。 */
+function comboOf(tiers, N) {
+  const small = tiers.filter(t => t.base < N);
+  let best = null;
+  const consider = (cost, got, parts) => { if (!best || cost < best.cost - 1e-9) best = { cost, got, parts }; };
+
+  const one = cheapestAtLeast(tiers, N);                     // 一档就够的情况
+  if (one) consider(one.cny, one.base, [{ n: 1, t: one }]);
+
+  if (N <= 30000 && small.length) {
+    const INF = Infinity;
+    const dp = new Array(N + 1).fill(INF), from = new Array(N + 1).fill(-1);
+    dp[0] = 0;
+    for (let x = 0; x < N; x++) {
+      if (dp[x] === INF) continue;
+      for (let ti = 0; ti < small.length; ti++) {
+        const y = x + small[ti].base;
+        if (y > N) continue;
+        const c = dp[x] + small[ti].cny;
+        if (c < dp[y]) { dp[y] = c; from[y] = ti; }
+      }
+    }
+    for (let x = 0; x <= N; x++) {
+      if (dp[x] === INF) continue;
+      const need = N - x;
+      const top = need > 0 ? cheapestAtLeast(tiers, need) : null;
+      if (need > 0 && !top) continue;
+      const parts = [];
+      let cur = x;
+      while (cur > 0 && from[cur] >= 0) { parts.push({ n: 1, t: small[from[cur]] }); cur -= small[from[cur]].base; }
+      if (top) parts.push({ n: 1, t: top });
+      consider(dp[x] + (top ? top.cny : 0), x + (top ? top.base : 0), mergeParts(parts));
+    }
+  } else if (small.length) {
+    // 数量极大（> 30000）：按「整包批量 + 余数补一档」推算（此量级基本都有整包直供）
+    tiers.forEach(t => {
+      const k = Math.floor(N / t.base);
+      if (k < 1) return;
+      const rem = N - k * t.base;
+      const top = rem > 0 ? cheapestAtLeast(tiers, rem) : null;
+      if (rem > 0 && !top) return;
+      const parts = [{ n: k, t }];
+      if (top) parts.push({ n: 1, t: top });
+      consider(k * t.cny + (top ? top.cny : 0), k * t.base + (top ? top.base : 0), mergeParts(parts));
+    });
+  }
+  return best;
+}
+
+/* 对外接口：allowCombo=true 时允许「多档凑够」，否则只认单档 */
+function qtyFit(d, N, allowCombo) {
+  const tiers = qtyTiers(d);
+  const max = tiers.reduce((m, t) => Math.max(m, t.base), 0);
+  const wrap = (cost, got, parts) => ({
+    cny: cost, base: got, qty: partsText(parts),
+    coupon: parts.length === 1 ? (parts[0].t.coupon || '') : '',
+    parts, combo: parts.length > 1 || parts[0].n > 1
+  });
+  if (allowCombo) {
+    const c = comboOf(tiers, N);
+    return { best: c ? wrap(c.cost, c.got, c.parts) : null, max, allowCombo: true };
+  }
+  const one = cheapestAtLeast(tiers, N);
+  return { best: one ? wrap(one.cny, one.base, [{ n: 1, t: one }]) : null, max, allowCombo: false };
+}
+
+/* 单位词：Per/1c → 币，Per/65p / Per/100P → 点，Ridi·Mrblue 的 Per/100 → 留空只报数字 */
+function unitWord(plat) {
+  const l = String((plat && plat.perLabels && plat.perLabels[0]) || '');
+  if (/p\b/i.test(l)) return '点';
+  if (/c\b/i.test(l)) return '币';
+  return '';
+}
+
+function renderCompare() {
+  const opts = compareOptions();
+  const picked = Object.keys(dataStore).map(p => opts.filter(o => o.p === p)).filter(a => a.length);
+  const N = cmpQty > 0 ? cmpQty : 0;
+
+  // 先算好每项：① 卡片按「最省」排序 ② 选择器序号 = 卡片排名（两处数字一致，避免混淆）
+  const calced = cmpPicks.map(pick => ({ pick, d: optionCalc(pick) }));
+  // 数量模式：为每一项求出「买到 ≥ N 个」的最省买法（可含多档组合）
+  if (N) calced.forEach(c => { c.q = qtyFit(c.d, N, allowCombo); });
+
+  // 排序：数量模式按「凑够 N 个的花费」；普通模式按 Per。凑不够 N 的排最后。
+  const ranked = [...calced].sort((a, b) => {
+    if (N) {
+      const qa = a.q.best, qb = b.q.best;
+      if (qa && qb) return qa.cny - qb.cny;
+      if (qa) return -1;
+      if (qb) return 1;
+    }
+    return a.d.best.per - b.d.best.per;
+  });
+  const rankOf = {};
+  ranked.forEach((x, i) => { rankOf[x.pick.id] = i + 1; });
+
+  const picker = `<div class="cmp-picker">
+    <div class="cmp-hint">选 <b>最多 4 项</b>对比：可以是同一平台的 <b>首充 / 次充 / 活动 / 普通 / iOS 港区 / 历史月份</b> 之间的对比，也可以跨平台挑（例如 Lezhin 首充 vs Bom 双倍 vs Ridi 首充）。<br>
+    结果<b>每行最多并排 2 个</b>（手机窄屏自动变成单列，避免横向挤在一起），卡片自带横向滚动条。<br>
+    按 <b>Per（第一个指标）</b> 判断谁更划算，序号 <b>1</b> 即最省；对比模式固定显示完整档位，不受顶部「只看最低档」影响。</div>
+    <div class="cmp-qtybar${N ? ' on' : ''}">
+      <span class="lab">按数量对比</span>
+      <span>想买</span>
+      <input id="cmp-qty" type="text" inputmode="numeric" autocomplete="off" maxlength="9" value="${N || ''}" placeholder="如 400">
+      <span>个</span>
+      <label class="cmb"><input type="checkbox" id="cmp-combo"${allowCombo ? ' checked' : ''}> 允许多档组合</label>
+      ${N ? '<button class="chip ghost" data-qtyclear="1">清除数量</button>' : ''}
+      <span class="qtyhint">${N
+        ? `已开启：按「买到 <b>${N}</b> 个」的最省买法算花费${allowCombo ? '（单档不够时会<b>多档组合</b>凑够）' : '（只看单档，凑不够就算不足）'}，排序与 <b>Best</b> 也跟着变。`
+        : `填一个数量（币 / 点），就能按「买到 ≥ 该数量」的最省买法对比各项花费 —— 例如想买 400 个币时，比 Bom 的首充 / 双倍 / 节日活动哪个便宜；数量超过单档上限时会自动多档组合凑够。`}</span>
+    </div>
+    ${picked.map(list => `<div class="cmp-grp"><span class="cmp-plat">${list[0].p}</span>
+      ${list.map(o => {
+        const on = cmpPicks.some(x => x.id === o.id);
+        return `<button class="chip${on ? ' on' : ''}" data-id="${o.id}">${o.label}${on ? `<span class="n">${rankOf[o.id]}</span>` : ''}</button>`;
+      }).join('')}</div>`).join('')}
+    <div class="cmp-grp cmp-grp-clear"><span class="cmp-plat"></span>
+      <button class="chip ghost" data-clear="1">清空选择</button>
+    </div>
+  </div>`;
+
+  if (!cmpPicks.length) {
+    return picker + `<div class="cmp-empty">还没有选择对比项 —— 点上面的分区名加入对比（最多 4 个，自动按最省排序）。</div>`;
+  }
+
+  // ===== 数量对比结果表（仅在填了数量时出现）=====
+  let qtyBlock = '';
+  if (N) {
+    const u0 = unitWord(ranked[0].d.plat);
+    const rowsHtml = ranked.map((x, i) => {
+      const b = x.q.best, uw = unitWord(x.d.plat);
+      const item = `${x.pick.p} · ${x.pick.label}`;
+      if (!b) {
+        return `<tr><td class="c-rank">–</td><td class="c-text">${item}</td>
+          <td class="c-qty na" colspan="4">档位不足：该分区最高仅 <b>${x.q.max}</b> 个${allowCombo ? '' : '（已关闭「允许多档组合」）'}</td></tr>`;
+      }
+      const extra = b.base - N;
+      return `<tr class="${i === 0 ? 'is-best' : ''}">
+        <td class="c-rank">${i + 1}</td>
+        <td class="c-text">${item}${i === 0 ? ' <span class="badge">Best</span>' : ''}</td>
+        <td class="c-qty">${b.qty}${b.combo ? '<span class="tag gold">组合</span>' : ''}${b.coupon ? `<div class="sub">用券：${b.coupon}</div>` : ''}</td>
+        <td class="c-qty">${b.base}${extra > 0 ? `<div class="sub">多 ${extra}</div>` : ''}</td>
+        <td class="c-price">¥${b.cny.toFixed(2)}</td>
+        <td class="c-unit">${(b.cny / b.base).toFixed(3)} ¥/${uw || '个'}</td>
+      </tr>`;
+    }).join('');
+
+    const b0 = ranked[0].q.best;
+    let qfoot;
+    if (b0) {
+      qfoot = `结论：想买 <b>${N}</b> 个时，<b>${ranked[0].pick.p} · ${ranked[0].pick.label}</b> 最省 —— ${b0.combo ? '最省买法 <b>' + b0.qty + '</b>' : '需买「' + b0.qty + '」档'}（实得 ${b0.base}${u0 ? ` ${u0}` : ''}），约 <b>¥${b0.cny.toFixed(2)}</b>。`;
+      const second = ranked[1] && ranked[1].q && ranked[1].q.best;
+      if (second && second.cny > b0.cny) {
+        qfoot += ` 比次选（${ranked[1].pick.p} · ${ranked[1].pick.label} ¥${second.cny.toFixed(2)}）省 ¥${(second.cny - b0.cny).toFixed(2)}。`;
+      }
+    } else {
+      qfoot = `结论：所选分区单档都凑不够 <b>${N}</b> 个 —— 勾上「允许多档组合」就可以用多档凑够。`;
+    }
+    qfoot += `<br>注：「${N} 个」按 <b>实得数量</b> 算（含赠送，如 20+10=30 记 30）；<b>Lezhin / Lezhinus 首充的数量里带 p 的是积分、不是币</b>，所以只按永久币计算。`
+      + (allowCombo ? '组合为「同一分区里买多档凑够」的最省解；像「首充 / 次充」这种一次性档位，组合只是数学最优、实际不能重复买。' : '')
+      + '各平台单位不同（Bom·Lezhin 是币，Tappytoon·Beltoon 是点，Ridi·Mrblue 是自有单位），跨平台只看花销量级。';
+
+    qtyBlock = `<div class="qty-rank">
+      <div class="section-title">按数量对比 · 买 ${N} 个</div>
+      <div class="card"><table>
+        <thead><tr>
+          <th class="c-rank">#</th><th class="c-text">对比项</th><th class="c-qty">最省买法</th>
+          <th class="c-qty">实得数量</th><th class="c-price">花费</th><th class="c-unit">均价</th>
+        </tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table></div>
+      <div class="cmp-foot">${qfoot}</div>
+    </div>`;
+  }
+
+  // 结果区：与常规页同款结构（衬线小标题 + 普通表格卡），不再有额外外壳 / 绿色摘要框
+  const cards = ranked.map((x, ri) => {
+    const { pick } = x;
+    // 数量模式下，只有真正凑得够 N 个的那一项才配得上 Best
+    const isBest = ri === 0 && (!N || (x.q && x.q.best));
+    const tail = isBest ? ' <span class="badge">Best</span>' : '';
+    const costLine = N
+      ? (x.q.best
+          ? `<div class="cmp-cost">买 ${N} 个 → ${x.q.best.combo ? `组合：<b>${x.q.best.qty}</b>` : `需「${x.q.best.qty}」档`}（实得 ${x.q.best.base}）· ≈ <b>¥${x.q.best.cny.toFixed(2)}</b>${x.q.best.coupon ? `（用券：${x.q.best.coupon}）` : ''}</div>`
+          : `<div class="cmp-cost na">买 ${N} 个 → ${allowCombo ? '凑不够' : '单档不够（可勾选「允许多档组合」）'}（该分区最高 ${x.q.max} 个）</div>`)
+      : '';
+    return `<div class="cmp-item">
+      <div class="section-title">${ri + 1} · ${pick.p} · ${pick.label}${tail}</div>
+      ${costLine}
+      ${renderPickTable(pick)}
+    </div>`;
+  }).join('');
+
+  const best = ranked[0], worst = ranked[ranked.length - 1];
+  let foot = '';
+  if (N) {
+    const b0 = ranked[0].q.best;
+    foot = b0
+      ? `结论：按数量算，想买 <b>${N}</b> 个时最省的是 <b>${best.pick.p} · ${best.pick.label}</b>（${b0.combo ? '最省买法 ' + b0.qty : '需买「' + b0.qty + '」档'}，实得 ${b0.base}，约 ¥${b0.cny.toFixed(2)}）。`
+      : `结论：所选分区均凑不够 ${N} 个。`;
+    foot += `<br>注：数量模式按「实得数量 ≥ ${N}」的最省买法排序，可跨平台混选（如 Bom 首充 vs 双倍 vs 节日）。组合 = 同一分区里买多档凑够；首充 / 次充 是一次性档位，组合仅供参考。各平台「个」的含义不同，跨平台只比花销量级。`;
+  } else if (ranked.length > 1 && isFinite(worst.d.best.per) && worst.d.best.per > 0) {
+    const diff = (worst.d.best.per - best.d.best.per) / worst.d.best.per * 100;
+    foot = `结论：<b>${best.pick.p} · ${best.pick.label}</b> 最省（${best.d.perLabel} ¥${best.d.best.per.toFixed(2)}），比最贵的一项（${worst.pick.p} · ${worst.pick.label} ¥${worst.d.best.per.toFixed(2)}）低 ${diff.toFixed(1)}%。`;
+    foot += `<br>注：各平台 Per 基准不同（1 币 / 100 韩元 / 65 点等），跨平台只看量级与趋势；同平台内部对比最精确。券后价分区取「该档最划算的那张券」。`;
+  } else {
+    foot = `结论：${best.pick.p} · ${best.pick.label}，${best.d.perLabel} ¥${best.d.best.per.toFixed(2)}。`;
+    foot += `<br>注：各平台 Per 基准不同（1 币 / 100 韩元 / 65 点等），跨平台只看量级与趋势；同平台内部对比最精确。券后价分区取「该档最划算的那张券」。`;
+  }
+
+  return picker + qtyBlock + `<div class="cmp-list n${Math.min(ranked.length, 4)}">${cards}</div><div class="cmp-foot">${foot}</div>`;
+
+}
+
+/* ================= 今日花费 · Today's Spending ================= */
+/* 把 dataStore 拍平成「平台 → 活动 → 档次」三级，供三个下拉框使用 */
+function spendOptions() {
+  const out = [];
+  Object.keys(dataStore).forEach(p => {
+    (dataStore[p].sections || []).forEach((sec, si) => {
+      if (sec.isSummary) return;
+      if (sec.isMonths) {
+        // 与常规页 / 对比模式一致：近的月份在前
+        sortMonthsDesc(sec.months).forEach(m => {
+          const mi = (sec.months || []).indexOf(m);
+          out.push({ p, id: p + '#' + si + '#m' + mi, label: sec.title + ' · ' + m.month, sec, rows: m.rows || [] });
+        });
+      } else if (sec.appleCard) {
+        // App Store Card（港区）：无 rows，按「面值 × 折扣」展开为伪档位；不设 base → 天然不算 Per
+        const rows = [];
+        (sec.discounts || []).forEach(d => {
+          (sec.values || []).forEach(v => {
+            rows.push({
+              qty: '面值 ' + v + ' · ' + fmtDiscount(d),
+              price: Math.round(v * d * 100) / 100,
+              currency: 'HKD'
+            });
+          });
+        });
+        out.push({ p, id: p + '#' + si, label: sec.title, sec, rows });
+      } else if (sec.rows && sec.rows.length) {
+        out.push({ p, id: p + '#' + si, label: sec.title, sec, rows: sec.rows });
+      }
+    });
+  });
+  return out;
+}
+
+/* 单个档位 × 所有渠道（网页 / iOS 国区 / iOS 港区 / 券后），含折合 RMB 与 Per */
+function channelsOf(opt, row, plat) {
+  const sec = opt.sec || {};
+  const list = [];
+  const mainCur = sec.currency || plat.currency;
+  const push = (label, cur, price, base, qty, cls, note) => {
+    if (price === undefined || price === null || !isFinite(price)) return;
+    const rate = cur === 'CNY' ? 1 : (rates[cur] || 0);
+    const cny = price * rate;
+    const b = base || 0;
+    list.push({
+      label, cur, price, base: b, qty, cls, note: note || '', cny,
+      per: b ? cny / b * ((plat.perX || [1])[0]) : 0,
+      sym: cur === 'CNY' ? '¥' : (CURRENCY_SYMBOL[cur] || '')
+    });
+  };
+  if (sec.isCoupons) {
+    push(sec.mainLabel || '原价', mainCur, row.price, row.base, row.qty, 'grp-main', '未用券');
+    (sec.coupons || []).forEach(c => {
+      const p = couponApply(row.price, c);
+      if (p === null || p === undefined) return;
+      push(c.label, mainCur, p, row.base, row.qty, 'grp-coupon', '满 ' + c.threshold.toLocaleString() + ' 可用');
+    });
+  } else {
+    push(sec.mainLabel || channelLabel(mainCur), mainCur, row.price, row.base, row.qty, 'grp-main');
+    if (row.iosPrice !== undefined) push('iOS 国区', 'CNY', row.iosPrice, row.iosBase || row.base, row.iosQty || row.qty, 'grp-ios');
+    if (row.hkPrice !== undefined) push('iOS 港区', 'HKD', row.hkPrice, row.hkBase || row.base, row.hkQty || row.qty, 'grp-hk');
+    if (sec.hasSpecial && (sec.priceFactor || row.specialPrice !== undefined)) {
+      // 有 priceFactor 的（如 Beltoon 新人五折卷）按折后价实时算，与表格里的「5折券/rmb」保持一致
+      const p = sec.priceFactor ? row.price * sec.priceFactor : row.specialPrice;
+      push('5折券', sec.priceFactor ? mainCur : 'CNY', p, row.base, row.qty, 'grp-coupon');
+    }
+  }
+  const min = list.length ? Math.min(...list.map(c => c.cny)) : 0;
+  list.forEach(c => { c.best = Math.abs(c.cny - min) < 0.0005; });
+  return list;
+}
+
+function tierLabel(opt, r) {
+  const bits = [];
+  if (r.tier !== undefined) bits.push(r.tier + ' 档');
+  bits.push(r.qty);
+  if (r.discount !== undefined) bits.push(fmtDiscount(r.discount));
+  return bits.join(' · ');
+}
+
+function renderSpend() {
+  const opts = spendOptions();
+  const plats = Object.keys(dataStore);
+  if (!spendSel.p || !dataStore[spendSel.p]) spendSel.p = plats[0];
+  const mine = opts.filter(o => o.p === spendSel.p);
+  if (!mine.some(o => o.id === spendSel.oid)) {
+    spendSel.oid = mine.length ? mine[0].id : null;
+    spendSel.ri = 0;
+  }
+  const opt = mine.find(o => o.id === spendSel.oid) || null;
+  if (opt && spendSel.ri >= opt.rows.length) spendSel.ri = 0;
+  const row = opt ? (opt.rows[spendSel.ri] || null) : null;
+  const plat = dataStore[spendSel.p];
+  const chans = (opt && row) ? channelsOf(opt, row, plat) : [];
+  const bestCh = chans.find(c => c.best) || null;
+
+  const picker = `<div class="spend-picker">
+    <label>平台
+      <select id="sp-p">${plats.map(pp =>
+        `<option value="${pp}"${pp === spendSel.p ? ' selected' : ''}>${pp}</option>`).join('')}</select>
+    </label>
+    <label>活动 / 分区
+      <select id="sp-o">${mine.map(o =>
+        `<option value="${o.id}"${o.id === spendSel.oid ? ' selected' : ''}>${o.label}</option>`).join('')}</select>
+    </label>
+    <label>档次
+      <select id="sp-r">${(opt ? opt.rows : []).map((r, i) =>
+        `<option value="${i}"${i === spendSel.ri ? ' selected' : ''}>${tierLabel(opt, r)}</option>`).join('')}</select>
+    </label>
+    <button class="btn tool sp-add" id="sp-add" type="button"${chans.length ? '' : ' disabled'}>加入今日清单</button>
+  </div>`;
+
+  let hero = '', chTable = '';
+  if (chans.length) {
+    hero = `<div class="spend-hero">
+      <div class="sh-item">
+        <div class="sh-t">本次花费 · 最低渠道</div>
+        <div class="sh-v">¥${bestCh.cny.toFixed(2)}</div>
+        <div class="sh-m">${bestCh.label}：${bestCh.sym}${bestCh.price.toLocaleString()}</div>
+      </div>
+      <div class="sh-item">
+        <div class="sh-t">实得数量</div>
+        <div class="sh-v">${bestCh.base || '—'}</div>
+        <div class="sh-m">${row.qty}${/p\b/i.test(String(row.qty)) ? '（带 p 的是<b>积分</b>，不算币）' : ''}</div>
+      </div>
+      <div class="sh-item">
+        <div class="sh-t">均价（${(plat.perLabels && plat.perLabels[0]) || 'Per'}）</div>
+        <div class="sh-v">${bestCh.per ? '¥' + bestCh.per.toFixed(2) : '—'}</div>
+        <div class="sh-m">${bestCh.per ? (unitWord(plat) ? '每 1 ' + unitWord(plat) + ' 折合' : '按第一个指标折算') : 'App Store Card 不折算 Per'}</div>
+      </div>
+      <div class="sh-item">
+        <div class="sh-t">选中的档位</div>
+        <div class="sh-v" style="font-size:15px;line-height:1.5">${spendSel.p} · ${opt.label}</div>
+        <div class="sh-m">${tierLabel(opt, row)}${row.tag ? ' · ' + row.tag : ''}${row.limited ? ' · 需抢' : ''}</div>
+      </div>
+    </div>`;
+    chTable = `<div class="card"><table>
+      <thead><tr>
+        <th class="c-text">支付渠道</th><th class="c-qty">数量</th><th class="c-price">价格</th>
+        <th class="c-price">折合 RMB</th><th class="c-per">Per</th><th class="c-text">说明</th>
+      </tr></thead>
+      <tbody>${chans.map(c => `<tr class="${c.best ? 'ch-best' : ''}">
+        <td class="c-text">${c.label}${c.best ? ' <span class="badge">Best</span>' : ''}</td>
+        <td class="c-qty">${c.qty}</td>
+        <td class="c-price">${c.sym}${c.price.toLocaleString()}</td>
+        <td class="c-price">¥${c.cny.toFixed(2)}</td>
+        <td class="c-per">${c.per ? c.per.toFixed(2) : '—'}</td>
+        <td class="c-text"><span class="price-num">${c.note || (c.cur === 'CNY' ? '本身以 RMB 计价' : '按实时汇率折算')}</span></td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  }
+
+  // 清单里的每一笔都按「当前选项 + 实时汇率」重算，避免汇率刷新后与上方数字不一致
+  const cartRows = spendCart.map(x => {
+    const o = opts.find(z => z.id === x.oid);
+    const pl = dataStore[x.p];
+    if (!o || !pl) return null;
+    const r = o.rows[x.ri] || o.rows[0];
+    if (!r) return null;
+    const chs = channelsOf(o, r, pl);
+    const bst = chs.find(c => c.best);
+    if (!bst) return null;
+    return { x, act: o.label, tier: tierLabel(o, r), chLabel: bst.label, cny: bst.cny, got: bst.base };
+  }).filter(Boolean);
+  const total = cartRows.reduce((s, y) => s + y.cny, 0);
+  const cart = `<div class="section-title">今日清单（${dayLabel(spendCartDate)}）${cartRows.length ? `（${cartRows.length} 笔）` : ''}</div>
+    ${cartRows.length ? `<div class="card spend-cart"><table>
+      <thead><tr>
+        <th class="c-text">平台 / 活动</th><th class="c-text">档次</th><th class="c-text">渠道</th>
+        <th class="c-qty">实得</th><th class="c-price">RMB</th><th class="c-x">—</th>
+      </tr></thead>
+      <tbody>
+        ${cartRows.map(y => `<tr>
+          <td class="c-text">${y.x.p} · ${y.act}</td>
+          <td class="c-text">${y.tier}</td>
+          <td class="c-text">${y.chLabel}</td>
+          <td class="c-qty">${y.got}</td>
+          <td class="c-price">¥${y.cny.toFixed(2)}</td>
+          <td class="c-x"><button class="rm" data-cartrm="${y.x.id}" type="button">删除</button></td>
+        </tr>`).join('')}
+        <tr class="total">
+          <td class="c-text" colspan="4">合计（今天一共要花）</td>
+          <td class="c-price c-tot">¥${total.toFixed(2)}</td>
+          <td class="c-x"><button class="rm" data-cartclear="1" type="button">清空</button></td>
+        </tr>
+      </tbody>
+    </table></div>`
+      : `<div class="cmp-empty">清单还是空的 —— 上面选好平台 / 活动 / 档次后点「加入今日清单」，就能累计今天各个平台一共要花多少 RMB。</div>`}`;
+
+  // ---- 历史记录：按日期存档，随时回看 / 载入 / 删除 ----
+  const days = Object.keys(spendHistory).sort().reverse();
+  const allTotal = days.reduce((s, k) => s + ((spendHistory[k] || {}).total || 0), 0);
+  const histRows = days.map(k => {
+    const rec = spendHistory[k] || {};
+    const items = rec.items || [];
+    const open = spendOpenDay === k;
+    const head = `<div class="hist-head" data-histday="${k}">
+      <span class="hd-date">${dayLabel(k)}${k === dayKey() ? ' <span class="hd-today">今天</span>' : ''}</span>
+      <span class="hd-meta">${items.length} 笔 · <b>¥${(rec.total || 0).toFixed(2)}</b></span>
+      <span class="hd-caret">${open ? '▾' : '▸'}</span>
+    </div>`;
+    if (!open) return `<div class="hist-day">${head}</div>`;
+    const det = items.map(y => `<tr>
+        <td class="c-text">${y.p} · ${y.act || ''}</td>
+        <td class="c-text">${y.tier || ''}</td>
+        <td class="c-text">${y.chLabel || ''}</td>
+        <td class="c-qty">${y.got != null ? y.got : ''}</td>
+        <td class="c-price">¥${(y.cny || 0).toFixed(2)}</td>
+      </tr>`).join('');
+    return `<div class="hist-day open">
+      ${head}
+      <div class="card hist-det"><table>
+        <thead><tr><th class="c-text">平台 / 活动</th><th class="c-text">档次</th><th class="c-text">渠道</th><th class="c-qty">实得</th><th class="c-price">RMB</th></tr></thead>
+        <tbody>${det}<tr class="total"><td class="c-text" colspan="4">${k} 这天合计</td><td class="c-price c-tot">¥${(rec.total || 0).toFixed(2)}</td></tr></tbody>
+      </table></div>
+      <div class="hist-acts">
+        <button class="btn tool tiny" data-histload="${k}" type="button">载入到今日清单</button>
+        <button class="rm" data-histdel="${k}" type="button">删除这天的记录</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  const hist = `<div class="section-title">历史记录 · History by date</div>
+    ${days.length ? `<div class="hist-sum">
+        共记录 <b>${days.length}</b> 天 · 累计 <b>¥${allTotal.toFixed(2)}</b>
+        <button class="btn tool tiny" data-histexp="1" type="button">导出记录 CSV</button>
+        <button class="rm" data-histclear="1" type="button">清空全部记录</button>
+      </div>
+      <div class="hist-list">${histRows}</div>`
+      : `<div class="cmp-empty">还没有历史记录 —— 上面的清单每加一笔就会按「今天」存一次，这里便会按天列出你每天花了多少。</div>`}
+    <div class="hist-tip">
+      记录仅保存在你的浏览器本地（localStorage），不上传、不联网、无需账号<br>
+      更换设备 / 浏览器 / 无痕模式或清理数据后将无法读取；每天 0 点后自动开启新的一天，昨天的记录会存入上方历史，如需长期保存，可点击「导出记录 CSV」
+    </div>`;
+
+  return `<div class="section-title" style="margin-top:0">今日花费 · Today's Spending</div>` + picker + hero + chTable + cart + hist;
+}
+
+/* 把当前清单拍成快照（含当时的渠道 / 价格，方便按日期留档）
+   坐标 p/oid/ri 一并保留，所以「载入到今日清单」还能按实时汇率重算 */
+function spendSnapshot() {
+  const opts = spendOptions();
+  const out = [];
+  spendCart.forEach(x => {
+    const o = opts.find(z => z.id === x.oid);
+    const pl = dataStore[x.p];
+    if (!o || !pl) return;
+    const r = o.rows[x.ri] || o.rows[0];
+    if (!r) return;
+    const bst = channelsOf(o, r, pl).find(c => c.best);
+    if (!bst) return;
+    out.push({
+      p: x.p, oid: x.oid, ri: x.ri,
+      act: o.label, tier: tierLabel(o, r), chLabel: bst.label,
+      cny: bst.cny, got: bst.base, qty: r.qty
+    });
+  });
+  return out;
+}
+
+/* 清单每变一次：写回本地 + 把「今天」的清单同步存档，再重绘 */
+function spendChanged() {
+  lsSet(LS_CART, { date: spendCartDate, items: spendCart });
+  const snap = spendSnapshot();
+  if (snap.length) {
+    spendHistory[spendCartDate] = {
+      savedAt: new Date().toISOString(),
+      total: snap.reduce((s, y) => s + y.cny, 0),
+      items: snap
+    };
+    lsSet(LS_HIST, spendHistory);
+  }
+  renderContent();
+}
+
+/* 把当前选中的档位（取最低渠道）加入今日清单；只存「平台 / 活动 / 档次」的坐标，价格在渲染时按实时汇率重算 */
+function spendAdd() {
+  if (!spendSel.p || !spendSel.oid) return;
+  const plat = dataStore[spendSel.p];
+  const opt = spendOptions().find(o => o.id === spendSel.oid);
+  if (!plat || !opt) return;
+  const row = opt.rows[spendSel.ri] || opt.rows[0];
+  if (!row) return;
+  const best = channelsOf(opt, row, plat).find(c => c.best);
+  if (!best) return;
+  if (spendCartDate !== dayKey()) { spendCartDate = dayKey(); spendCart = []; }   // 跨天则先开新的一天
+  spendCart.push({ id: ++spendSeq, p: spendSel.p, oid: spendSel.oid, ri: spendSel.ri });
+  spendChanged();
+  toast('已加入今日清单：' + spendSel.p + ' · ' + opt.label + ' · ' + best.label + ' ≈ ¥' + best.cny.toFixed(2));
+}
+
+/* 导出全部按日期的花费记录（CSV，含 BOM，Excel 直接打开不乱码） */
+function exportSpendHistory() {
+  const days = Object.keys(spendHistory).sort().reverse();
+  if (!days.length) { toast('还没有历史记录'); return; }
+  const esc = v => {
+    const s = String(v == null ? '' : v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+  const rows = [['日期', '平台', '活动 / 分区', '档次', '渠道', '实得数量', 'RMB', '记录时间']];
+  days.forEach(k => {
+    const rec = spendHistory[k] || {};
+    (rec.items || []).forEach(y => rows.push([
+      k, y.p, y.act, y.tier, y.chLabel, y.got != null ? y.got : '',
+      (y.cny || 0).toFixed(2), String(rec.savedAt || '').slice(0, 19).replace('T', ' ')
+    ]));
+  });
+  const csv = rows.map(r => r.map(esc).join(',')).join('\r\n');
+  const name = '今日花费记录_' + dayKey();
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('已导出 ' + name + '.csv');
+}
+
+/* ================= 复制 / 导出 CSV ================= */
+function cleanText(t) { return (t || '').replace(/\s+/g, ' ').trim(); }
+function stripHtml(s) {
+  const d = document.createElement('div');
+  d.innerHTML = s;
+  return cleanText(d.textContent);
+}
+
+/* 取卡片标题（分区标题 或 月份卡片标题） */
+function cardTitleOf(card) {
+  const t = card.querySelector('.card-title');
+  if (t) return cleanText(t.textContent);
+  const cell = card.closest('.grid-cell');
+  if (cell) {
+    const st = cell.querySelector('.section-title');
+    if (st) return cleanText(st.textContent);
+  }
+  const prev = card.previousElementSibling;
+  if (prev && prev.classList.contains('section-title')) return cleanText(prev.textContent);
+  return '';
+}
+
+/* 表格 → 二维数组（表头取最后一行，避开 colspan 分组行） */
+function tableToMatrix(tbl) {
+  const rows = [];
+  const headCells = tbl.querySelectorAll('thead tr:last-child th');
+  // 分组表头（券后价表）把分组名并进列名，避免出现多个同名「韩元 ₩」列
+  if (headCells.length) rows.push([...headCells].map(c => {
+    const t = cleanText(c.textContent);
+    const g = c.dataset && c.dataset.g;
+    return g ? g + ' · ' + t : t;
+  }));
+  tbl.querySelectorAll('tbody tr').forEach(tr => {
+    rows.push([...tr.children].map(td => cleanText(td.textContent)));
+  });
+  return rows;
+}
+
+/* 导出 / 复制的分块数据 —— 按当前模式取，且各模式都不混入别的模式的内容。
+   规则：
+     常规页   → 平台注 + 平台全部表格
+     对比模式 → 只取各对比项自己的表格（+ 数量对比结果表），**绝不带任何平台注**
+     今日花费 → 只取「今日清单」，**不带平台注，也不带逐渠道比价（渠道最优）那张表** */
+function buildBlocks() {
+  const blocks = [];
+
+  if (spendMode) {
+    document.querySelectorAll('#content .spend-cart').forEach(card => {
+      const tbl = card.querySelector('table');
+      if (tbl) blocks.push({ title: '今日清单（' + dayLabel(spendCartDate) + '）', rows: tableToMatrix(tbl) });
+    });
+    return blocks;
+  }
+
+  if (cmpMode) {
+    const qr = document.querySelector('#content .qty-rank table');
+    if (qr) blocks.push({ title: '按数量对比 · 买 ' + cmpQty + ' 个', rows: tableToMatrix(qr) });
+    document.querySelectorAll('#content .cmp-item').forEach(item => {
+      const tbl = item.querySelector('table');
+      if (!tbl) return;
+      const t = item.querySelector('.section-title');
+      blocks.push({ title: t ? cleanText(t.textContent) : '', rows: tableToMatrix(tbl) });
+    });
+    return blocks;
+  }
+
+  const platform = dataStore[currentPlatform];
+  if (platform && platform.notes && platform.notes.length) {
+    blocks.push({ title: '注', rows: platform.notes.map(n => [stripHtml(n)]) });
+  }
+  document.querySelectorAll('#content .card').forEach(card => {
+    if (card.classList.contains('plat-notes')) return;
+    const tbl = card.querySelector('table');
+    if (!tbl) return;
+    blocks.push({ title: cardTitleOf(card), rows: tableToMatrix(tbl) });
+  });
+  return blocks;
+}
+
+/* 导出的文件名 / 表头首行（按模式区分，不再一律「平台_比价」） */
+function exportName() {
+  if (spendMode) return '今日花费_清单_' + dayKey();
+  if (cmpMode) return '对比' + cmpPicks.length + '项' + (cmpQty ? '_买' + cmpQty + '个' : '') + '_' + dayKey();
+  return currentSub + '_比价';
+}
+function exportTitle() {
+  if (spendMode) return '今日花费 · 今日清单（' + dayLabel(spendCartDate) + '）';
+  if (cmpMode) {
+    const list = cmpPicks.map(p => p.p + ' · ' + p.label).join('  vs  ');
+    return '对比模式 · ' + (list || '（未选对比项）') + (cmpQty ? ' ｜ 按数量：买 ' + cmpQty + ' 个' : '');
+  }
+  return currentSub;
+}
+
+function blocksToDelimited(blocks, sep) {
+  const esc = v => {
+    const s = String(v == null ? '' : v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+  const out = [exportTitle()];
+  blocks.forEach(b => {
+    out.push('');
+    if (b.title) out.push(b.title);
+    b.rows.forEach(r => out.push(r.map(esc).join(sep)));
+  });
+  return out.join('\n');
+}
+
+/* 顶栏两个按钮的名字随模式变，避免「在对比模式点了导出平台 CSV」这种误触 */
+function toolLabels() {
+  if (spendMode) return { copy: '复制今日清单', csv: '导出清单 CSV' };
+  if (cmpMode)   return { copy: '复制对比表格', csv: '导出对比 CSV' };
+  return { copy: '复制当前平台表格', csv: '导出 CSV' };
+}
+function syncToolButtons() {
+  const L = toolLabels();
+  const b1 = document.getElementById('btn-copy');
+  const b2 = document.getElementById('btn-csv');
+  if (b1) { b1.dataset.label = L.copy; b1.textContent = L.copy; b1.classList.remove('ok'); }
+  if (b2) { b2.dataset.label = L.csv; b2.textContent = L.csv; }
+}
+
+function copyCurrent() {
+  const text = blocksToDelimited(buildBlocks(), '\t');
+  const label = toolLabels().copy;
+  const done = ok => {
+    const btn = document.getElementById('btn-copy');
+    btn.classList.add('ok');
+    btn.textContent = ok ? '已复制 ✓' : '复制失败，请手动选区';
+    toast(ok ? '已复制「' + exportName() + '」，可直接粘贴到 Excel' : '浏览器拒绝了剪贴板，请手动复制');
+    setTimeout(() => { btn.classList.remove('ok'); btn.textContent = label; }, 2000);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => done(true)).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, done) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    done(ok);
+  } catch (e) { done(false); }
+}
+
+function exportCsv() {
+  const csv = blocksToDelimited(buildBlocks(), ',');
+  const name = exportName().replace(/[\\/:*?"<>|（）()]/g, '_');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast('已导出 ' + name + '.csv');
+}
+
+function toast(msg) {
+  let el = document.getElementById('toast');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'toast';
+    el.className = 'toast';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* ================= 初始化 ================= */
+async function init() {
+  renderPlatformTabs();
+  renderContent();
+
+  document.getElementById('btn-copy').onclick = copyCurrent;
+  document.getElementById('btn-csv').onclick = exportCsv;
+  const btnMin = document.getElementById('btn-min');
+  btnMin.onclick = () => {
+    showMin = !showMin;
+    btnMin.textContent = '只看最低档：' + (showMin ? '开' : '关');
+    renderContent();
+  };
+
+  const btnCmp = document.getElementById('btn-cmp');
+  const btnSpend = document.getElementById('btn-spend');
+  btnCmp.onclick = () => {
+    cmpMode = !cmpMode;
+    if (cmpMode) spendMode = false;              // 两个模式互斥
+    btnCmp.textContent = '对比模式：' + (cmpMode ? '开' : '关');
+    btnCmp.classList.toggle('on', cmpMode);
+    btnSpend.textContent = '今日花费：' + (spendMode ? '开' : '关');
+    btnSpend.classList.toggle('on', spendMode);
+    renderContent();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  btnSpend.onclick = () => {
+    spendMode = !spendMode;
+    if (spendMode) cmpMode = false;
+    btnSpend.textContent = '今日花费：' + (spendMode ? '开' : '关');
+    btnSpend.classList.toggle('on', spendMode);
+    btnCmp.textContent = '对比模式：' + (cmpMode ? '开' : '关');
+    btnCmp.classList.toggle('on', cmpMode);
+    renderContent();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 对比项选择（事件委托：#content 的 innerHTML 会被替换，容器本身不变）
+  document.getElementById('content').addEventListener('click', e => {
+    const el = e.target;
+    // ---- 今日花费：加入清单 / 删除 / 清空 ----
+    const add = el.closest && el.closest('#sp-add');
+    if (add && spendMode) { spendAdd(); return; }
+    const rm = el.closest && el.closest('[data-cartrm]');
+    if (rm && spendMode) {
+      spendCart = spendCart.filter(x => String(x.id) !== String(rm.dataset.cartrm));
+      spendChanged(); return;
+    }
+    const cl = el.closest && el.closest('[data-cartclear]');
+    if (cl && spendMode) { spendCart = []; spendChanged(); return; }
+
+    // ---- 今日花费：历史记录（展开 / 载入 / 删除某天 / 清空全部 / 导出）----
+    const hload = el.closest && el.closest('[data-histload]');
+    if (hload && spendMode) {
+      const k = hload.dataset.histload;
+      const rec = spendHistory[k];
+      if (rec && rec.items && rec.items.length) {
+        if (spendCartDate !== dayKey()) { spendCartDate = dayKey(); spendCart = []; }
+        rec.items.forEach(y => spendCart.push({ id: ++spendSeq, p: y.p, oid: y.oid, ri: y.ri }));
+        spendChanged();
+        toast('已把 ' + dayLabel(k) + ' 的 ' + rec.items.length + ' 笔载入今日清单');
+      }
+      return;
+    }
+    const hdel = el.closest && el.closest('[data-histdel]');
+    if (hdel && spendMode) {
+      const k = hdel.dataset.histdel;
+      delete spendHistory[k];
+      lsSet(LS_HIST, spendHistory);
+      if (spendOpenDay === k) spendOpenDay = null;
+      renderContent();
+      toast('已删除 ' + dayLabel(k) + ' 的记录');
+      return;
+    }
+    const hclr = el.closest && el.closest('[data-histclear]');
+    if (hclr && spendMode) {
+      spendHistory = {};
+      lsSet(LS_HIST, spendHistory);
+      spendOpenDay = null;
+      renderContent();
+      toast('已清空全部历史记录');
+      return;
+    }
+    const hexp = el.closest && el.closest('[data-histexp]');
+    if (hexp && spendMode) { exportSpendHistory(); return; }
+    const hday = el.closest && el.closest('[data-histday]');
+    if (hday && spendMode) {
+      const k = hday.dataset.histday;
+      spendOpenDay = spendOpenDay === k ? null : k;
+      renderContent(); return;
+    }
+
+    const chip = el.closest && el.closest('.chip');
+    if (!chip || !cmpMode) return;
+    if (chip.dataset.clear) { cmpPicks = []; renderContent(); return; }
+    if (chip.dataset.qtyclear) { cmpQty = 0; renderContent(); return; }
+    const id = chip.dataset.id;
+    if (!id) return;
+    const i = cmpPicks.findIndex(x => x.id === id);
+    if (i >= 0) {
+      cmpPicks.splice(i, 1);
+    } else {
+      if (cmpPicks.length >= 4) { cmpPicks.shift(); toast('最多对比 4 项，已移除最早选的一项'); }
+      const opt = compareOptions().find(o => o.id === id);
+      if (opt) cmpPicks.push(opt);
+    }
+    renderContent();
+  });
+
+  // 下拉框 / 勾选框：change 才重绘（select 不需要每次按键都重算）
+  document.getElementById('content').addEventListener('change', e => {
+    const t = e.target;
+    if (!t || !t.id) return;
+    if (t.id === 'cmp-combo') { allowCombo = !!t.checked; renderContent(); return; }
+    if (t.id === 'sp-p') { spendSel.p = t.value; spendSel.oid = null; spendSel.ri = 0; renderContent(); return; }
+    if (t.id === 'sp-o') { spendSel.oid = t.value; spendSel.ri = 0; renderContent(); return; }
+    if (t.id === 'sp-r') { spendSel.ri = parseInt(t.value, 10) || 0; renderContent(); return; }
+  });
+
+  // 按数量对比：输入「想买多少个」，实时重算。
+  // 输入框会随整块内容一起重绘，所以重绘后必须重新 focus 并把光标放到**最后一个数字后面**。
+  // 注意：input 用 type="text"（不是 number）—— Chrome 对 number 类型的 setSelectionRange 会抛
+  // InvalidStateError，导致光标被丢到最左边（就是这个 bug 的根因）；inputmode="numeric" 保证手机弹数字键盘。
+  document.getElementById('content').addEventListener('input', e => {
+    const t = e.target;
+    if (!t || t.id !== 'cmp-qty') return;
+    const raw = String(t.value);
+    const digits = raw.replace(/[^\d]/g, '').replace(/^0+(?=\d)/, '');   // 只留数字，去前导 0
+    const nv = Math.max(0, Math.min(parseInt(digits || '0', 10) || 0, 999999999));
+    const want = nv ? String(nv) : '';
+    if (raw === digits && raw === want && nv === cmpQty) return;   // 已是规范形态且值没变 → 不必重绘
+    cmpQty = nv;
+    renderContent();
+    const el = document.getElementById('cmp-qty');
+    if (el) {
+      el.focus();
+      const n = el.value.length;
+      try { el.setSelectionRange(n, n); } catch (_) {}
+    }
+  });
+
+  const rateEl = document.getElementById('rate-display');
+  const [krw, usd, hkd, jpy] = await Promise.all([
+    fetchRate('KRW'), fetchRate('USD'), fetchRate('HKD'), fetchRate('JPY')
+  ]);
+  if (krw) rates.KRW = krw;
+  if (usd) rates.USD = usd;
+  if (hkd) rates.HKD = hkd;
+  if (jpy) rates.JPY = jpy;
+
+  const parts = [];
+  if (krw) parts.push(`1 韩元 ≈ <b>${krw.toFixed(5)}</b> 元`);
+  if (usd) parts.push(`1 美元 ≈ <b>${usd.toFixed(4)}</b> 元`);
+  if (hkd) parts.push(`1 港币 ≈ <b>${hkd.toFixed(4)}</b> 元`);
+  if (jpy) parts.push(`1 日元 ≈ <b>${jpy.toFixed(5)}</b> 元`);
+
+  if (parts.length) {
+    rateEl.innerHTML = `当前汇率（对RMB）：${parts.join(' ｜ ')}`;
+  } else {
+    rateEl.textContent = `未获取到实时汇率，使用默认值`;
+  }
+  renderContent();
+}
+
+init();
+</script>
+
+</body>
+</html>
