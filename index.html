@@ -164,11 +164,42 @@
     border-radius: 2px; font-variant-numeric: tabular-nums;
   }
   .cmp-qtybar input#cmp-qty:focus { outline: none; border-color: var(--text); }
+  .cmp-qtybar input#cmp-budget {
+    width: 96px; padding: 4px 8px; font: inherit; font-size: 13px; text-align: center;
+    color: var(--text); background: var(--surface); border: 1px solid var(--border-3);
+    border-radius: 2px; font-variant-numeric: tabular-nums;
+  }
+  .cmp-qtybar input#cmp-budget:focus { outline: none; border-color: var(--text); }
   .cmp-qtybar .qtyhint { color: var(--muted); font-size: 11.5px; line-height: 1.5; }
   .cmp-qtybar .qtyhint b { color: var(--text-2); }
   .cmp-qtybar.on { background: var(--green-bg); border-style: solid; border-color: var(--border-3); }
   .cmp-qtybar .cmb { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: var(--text-2); user-select: none; }
   .cmp-qtybar .cmb input { accent-color: var(--text); margin: 0; }
+
+  /* ============ 自助计算 / 自定义金额：手填的输入框 ============ */
+  .spend-picker input, .calc-picker input {
+    font: inherit; font-size: 13px; color: var(--text); background: var(--bg);
+    border: 1px solid var(--border-3); border-radius: 2px; padding: 5px 8px; width: 132px;
+  }
+  .spend-picker input:focus, .calc-picker input:focus { outline: none; border-color: var(--text); }
+  .spend-picker .hint, .calc-picker .hint {
+    flex: 1 1 100%; font-size: 11.5px; color: var(--muted); line-height: 1.7; margin-top: 2px;
+  }
+  .spend-picker .hint b, .calc-picker .hint b { color: var(--text-2); }
+  .calc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(440px, 1fr)); gap: 14px; align-items: start; }
+  @media (max-width: 900px) { .calc-grid { grid-template-columns: 1fr; } }
+  .calc-card td.c-x { text-align: center; }
+  .calc-card td.c-qty.na { color: var(--muted); }
+  .calc-card .rm {
+    cursor: pointer; color: var(--muted); background: var(--bg);
+    border: 1px solid var(--border); border-radius: 2px;
+    font-family: inherit; font-size: 11px; padding: 1px 7px;
+  }
+  .calc-card .rm:hover { color: var(--red); border-color: var(--red); }
+  .calc-card .rm.plus { color: var(--text-2); }
+  .calc-card .rm.plus:hover { color: var(--green); border-color: var(--green); }
+  .calc-tip { margin-top: 12px; font-size: 12px; color: var(--muted); line-height: 1.75; border-top: 1px solid var(--border); padding-top: 10px; }
+  .calc-tip b { color: var(--text-2); }
 
   /* ============ 今日花费 · Today's Spending ============ */
   .spend-picker {
@@ -430,7 +461,9 @@
     <li><span class="badge">Best</span> 表示同表内 Per 值最低的档位</li>
     <li>Per 值 = RMB价格 ÷ 计算基数 × 系数，均按实时汇率动态计算</li>
     <li>顶部「<b>对比模式</b>」可同时挑 <b>最多 4 个分区</b>（可跨平台：如 Lezhin 首充 vs 韩bom 双倍 vs Ridi 首充）比较，<b>每行最多并排 2 个</b>（窄屏自动变单列），按 Per 值排名；填了「想买 N 个」后改按「凑够 N 个的最省买法」排序，<b>单档不够时会多档组合</b>（可关闭）</li>
-    <li>顶部「<b>今日花费</b>」按 <b>平台 → 活动 → 档次</b> 三级下拉选好，立刻算出该档在各渠道折合 RMB 的价格与最省渠道，可「加入今日清单」累计今天总共要花多少</li>
+    <li>顶部「<b>今日花费</b>」按 <b>平台 → 活动 → 档次</b> 三级下拉选好，立刻算出该档在各渠道折合 RMB 的价格与最省渠道，可「加入今日清单」累计今天总共要花多少；活动里还有「<b>✎ 自定义金额</b>」，可把表里没有的新组合（价格 + 数量）自己填进去算 RMB 与 Per 并计入清单</li>
+    <li>顶部「<b>自助计算</b>」：自己填 <b>币种（韩元 / 美元 / 日元 / 港币 / 人民币）+ 价格 + 实得数量</b>，实时按所选平台的指标算出折合 RMB 与各档 Per（Lezhin 是 Per/1c·2c·3c，Ridi·Mrblue 是 Per/100…600，Tappytoon 是 Per/100P…400P），可累积多条横向对比，按平台自动分组</li>
+    <li>对比模式除了「<b>按数量</b>」（想买 N 个，谁最省），还能「<b>按 RMB 预算</b>」（手里 ¥X，各项最多能买到多少）；两者二选一，填一个另一个自动清空</li>
   </ul>
 </details>
 
@@ -439,9 +472,10 @@
   <div class="tools">
     <button class="btn tool" id="btn-copy" type="button">复制当前平台表格</button>
     <button class="btn tool" id="btn-csv" type="button">导出 CSV</button>
-    <button class="btn tool" id="btn-min" type="button">只看最低档：开</button>
+    <button class="btn tool" id="btn-min" type="button">只看最低档：关</button>
     <button class="btn tool" id="btn-cmp" type="button">对比模式：关</button>
     <button class="btn tool" id="btn-spend" type="button">今日花费：关</button>
+    <button class="btn tool" id="btn-calc" type="button">自助计算：关</button>
   </div>
 </div>
 <nav class="subtabs" id="subtabs"></nav>
@@ -597,6 +631,19 @@ const dataStore = {
       "支持银联 / Paypal / Visa / 万事达卡。",
     ],
     sections: [
+      { title: "普通（网页版）",
+        note: "网页版原价，<b>不使用任何优惠券</b>：Price 就是实际要付的韩元，RMB 按实时汇率折算，Per/1c = RMB ÷ 币数。想看用券后的价格，请看下一张「普通（网页版）· 券后价」。",
+        rows: [
+          { qty: "22+3=25",     price: 4500,   base: 25  },
+          { qty: "45+10=55",    price: 9900,   base: 55  },
+          { qty: "90+30=120",   price: 19800,  base: 120 },
+          { qty: "140+50=190",  price: 29500,  base: 190 },
+          { qty: "240+90=330",  price: 49800,  base: 330 },
+          { qty: "243+92=335",  price: 50000,  base: 335 },
+          { qty: "360+140=500", price: 69800,  base: 500 },
+          { qty: "500+200=700", price: 84000,  base: 700 },
+          { qty: "570+270=840", price: 100000, base: 840 }
+        ]},
       { title: "普通（网页版）· 券后价", solo: true, isCoupons: true, mainLabel: "原价",
         note: "券使用条件：满 5,000₩ 可用 1000₩ 券 / 10% 券；满 10,000₩ 可用 3000₩ 券；满 40,000₩ 可用 15% 券；门槛按原价判定，未达门槛标「—」。各券按单张使用（不叠加）；Price 下方RMB按实时汇率折算，Per/1c = 券后RMB ÷ 币数，每组 Per/1c 最低的一档标「Best」。",
         coupons: [
@@ -926,18 +973,26 @@ let rates = { KRW: 0.00499, USD: 6.7104, HKD: 0.8551, JPY: 0.04254, CNY: 1 };   
 let currentPlatform = "Lezhin";      // 当前正在渲染的平台（计算 Per 值时用到）
 let currentGroup   = TAB_GROUPS[0].name;   // 当前选中的标签分组
 let currentSub     = TAB_GROUPS[0].members[0];  // 当前分组内选中的平台（二级标签）
-let showMin        = true;   // 只看最低档：每张表只留 Per 值最低的一档，历史月份合并为汇总表
+let showMin        = false;  // 只看最低档：每张表只留 Per 值最低的一档，历史月份合并为汇总表（默认关：打开就是完整档位）
 let cmpMode        = false;  // 对比模式：跨平台 / 跨分区挑最多 4 项比较（每行最多 2 个）
 let cmpPicks       = [];     // 已选中的对比项（最多 4 个）
 let cmpQty         = 0;      // 按数量对比：目标数量（买了多少个币 / 点），0 = 关闭
 let allowCombo     = true;   // 按数量对比：数量多时允许多档组合凑够（否则只认单档）
 let spendMode      = false;  // 今日花费模式（与对比模式互斥）
-let spendSel       = { p: null, oid: null, ri: 0 };   // 今日花费当前选中的 平台 / 活动 / 档次
-let spendCart      = [];     // 今日清单：[{ id, p, oid, ri }] —— 只存坐标，价格渲染时按汇率重算
+let spendSel       = { p: null, oid: null, ri: 0, ci: -1 };   // 今日花费当前选中的 平台 / 活动 / 档次 / 渠道（ci = -1 自动取最省）
+let spendCart      = [];     // 今日清单：[{ id, p, oid, ri, ci }] —— 只存坐标，价格渲染时按汇率重算
 let spendSeq       = 0;
 let spendCartDate  = '';     // 当前清单属于哪一天（YYYY-MM-DD）
 let spendHistory   = {};     // 按日期存档：{ 'YYYY-MM-DD': { savedAt, total, items:[快照] } }
 let spendOpenDay   = null;   // 历史记录里当前展开的那一天
+let spendCustom    = { cur: 'KRW', price: '', qty: '' };  // 今日花费里的「自定义金额」输入（币种 / 价格 / 实得数量）
+
+let cmpBudget      = 0;      // 按 RMB 预算对比（与 cmpQty 互斥：填一个就清另一个）
+let cmpByPer       = true;   // 数量 / 预算对比的判定口径：true = 每币均价最低，false = 总价最低 / 买得最多
+let calcMode       = false;  // 自助计算模式（与对比 / 今日花费互斥）
+let calcSel        = { p: 'Lezhin', cur: 'KRW', price: '', qty: '', name: '' };
+let calcRows       = [];     // 自助计算结果列表（可累积多条，按平台分组横向对比）
+let calcSeq        = 0;
 
 /* ---------- 本地记忆：localStorage ----------
    让这个纯 HTML 文件自带「记忆」，不联网、不需要后端 / 账号：
@@ -945,6 +1000,7 @@ let spendOpenDay   = null;   // 历史记录里当前展开的那一天
    局限：换浏览器 / 换设备 / 无痕模式 / 清理浏览数据都会读不到（可导出 CSV 留档）。 */
 const LS_CART = 'crc.spendCart.v1';
 const LS_HIST = 'crc.spendHistory.v1';
+const LS_CALC = 'crc.calcRows.v1';
 function lsGet(k, def) {
   try { const s = localStorage.getItem(k); return s ? JSON.parse(s) : def; }
   catch (e) { return def; }
@@ -975,6 +1031,11 @@ function dayLabel(k) {
   }
   const h = lsGet(LS_HIST, null);
   if (h && typeof h === 'object' && !Array.isArray(h)) spendHistory = h;
+  const cr = lsGet(LS_CALC, null);
+  if (Array.isArray(cr)) {
+    calcRows = cr.filter(x => x && dataStore[x.p]);
+    calcSeq = calcRows.reduce((m, x) => Math.max(m, +x.id || 0), 0);
+  }
 })();
 
 function groupByName(n) { return TAB_GROUPS.find(g => g.name === n) || TAB_GROUPS[0]; }
@@ -1157,6 +1218,8 @@ function renderContent() {
 
   const html = spendMode
     ? `<div class="spend-wrap">${renderSpend()}</div>`
+    : calcMode
+    ? `<div class="calc-wrap">${renderCalc()}</div>`
     : cmpMode
     ? `<div class="cmp-wrap">${renderCompare()}</div>`
     : `<div class="plat-block">
@@ -1756,6 +1819,12 @@ function cheapestAtLeast(tiers, need) {
   tiers.forEach(t => { if (t.base >= need && (!b || t.cny < b.cny)) b = t; });
   return b;
 }
+/* 能一档凑够 need 的「每币均价最低」档位（byPer 口径用） */
+function bestPerAtLeast(tiers, need) {
+  let b = null;
+  tiers.forEach(t => { if (t.base >= need && (!b || t.cny / t.base < b.cny / b.base)) b = t; });
+  return b;
+}
 /* 合并同一个档位的重复次数（把 8 次「200+200=400」并成 8 × …） */
 function mergeParts(list) {
   const map = new Map();
@@ -1767,19 +1836,35 @@ function mergeParts(list) {
   out.sort((a, b) => b.t.base - a.t.base);
   return out;
 }
-function partsText(parts) {
-  return parts.map(p => (p.n > 1 ? p.n + ' × ' : '') + p.t.qty).join(' + ');
+/* 把买法拼成文字：单档就原样（210+140=350），
+   多档组合时每一档都套全角括号 —— （210+140=350） + （90+60=150），
+   买多份写成 3 ×（90+60=150）。paren 不传时按「是否真的是组合」自动决定。 */
+function partsText(parts, paren) {
+  const multi = parts.length > 1 || parts.some(p => p.n > 1);
+  const use = (paren === undefined) ? multi : !!paren;
+  return parts.map(p => {
+    const inner = use ? '（' + p.t.qty + '）' : p.t.qty;   // 括号只包「这一档」，份数放在括号外面
+    return (p.n > 1 ? p.n + ' × ' : '') + inner;           // 例：3 × （500+400=900）
+  }).join(' + ');
 }
 
 /* 组合凑够 N 个：返回 { cost, got, parts }，无解返回 null。
+   判定口径 byPer：
+     false → 在「实得 ≥ N」的方案里取 **总价最低**
+     true  → 在「实得 ≥ N」的方案里取 **每币均价最低**（不同组合实得数量不同，总价低 ≠ 单价低）
    做法是精确的 —— 最优解一定可以拆成「一堆「单档 < N」的档位凑到 x ≤ N」+「最后一档补足」，
-   所以对 base < N 的档位做完全背包 DP（0..N），再枚举最后一档取最小。 */
-function comboOf(tiers, N) {
+   所以对 base < N 的档位做完全背包 DP（0..N），再枚举最后一档取最优。 */
+function comboOf(tiers, N, byPer) {
   const small = tiers.filter(t => t.base < N);
   let best = null;
-  const consider = (cost, got, parts) => { if (!best || cost < best.cost - 1e-9) best = { cost, got, parts }; };
+  const val = (cost, got) => (byPer && got > 0) ? (cost / got) : cost;
+  const consider = (cost, got, parts) => {
+    if (got < N) return;
+    if (!best || val(cost, got) < val(best.cost, best.got) - 1e-12) best = { cost, got, parts };
+  };
+  const pickTop = byPer ? bestPerAtLeast : cheapestAtLeast;
 
-  const one = cheapestAtLeast(tiers, N);                     // 一档就够的情况
+  const one = pickTop(tiers, N);                             // 一档就够的情况
   if (one) consider(one.cny, one.base, [{ n: 1, t: one }]);
 
   if (N <= 30000 && small.length) {
@@ -1795,16 +1880,38 @@ function comboOf(tiers, N) {
         if (c < dp[y]) { dp[y] = c; from[y] = ti; }
       }
     }
-    for (let x = 0; x <= N; x++) {
-      if (dp[x] === INF) continue;
-      const need = N - x;
-      const top = need > 0 ? cheapestAtLeast(tiers, need) : null;
-      if (need > 0 && !top) continue;
+    const build = x => {
       const parts = [];
       let cur = x;
       while (cur > 0 && from[cur] >= 0) { parts.push({ n: 1, t: small[from[cur]] }); cur -= small[from[cur]].base; }
-      if (top) parts.push({ n: 1, t: top });
-      consider(dp[x] + (top ? top.cny : 0), x + (top ? top.base : 0), mergeParts(parts));
+      return parts;
+    };
+    if (byPer) {
+      // 均价最低：枚举「凑到 x」×「补足的最后一档」，记下最优的 (x, 档)，最后只回溯一次
+      let bx = -1, bt = -1, bv = Infinity;
+      for (let x = 0; x <= N; x++) {
+        if (dp[x] === INF) continue;
+        for (let i = 0; i < tiers.length; i++) {
+          const got = x + tiers[i].base;
+          if (got < N) continue;
+          const v = (dp[x] + tiers[i].cny) / got;
+          if (v < bv - 1e-12) { bv = v; bx = x; bt = i; }
+        }
+      }
+      if (bx >= 0) {
+        const parts = build(bx).concat([{ n: 1, t: tiers[bt] }]);
+        consider(dp[bx] + tiers[bt].cny, bx + tiers[bt].base, mergeParts(parts));
+      }
+    } else {
+      for (let x = 0; x <= N; x++) {
+        if (dp[x] === INF) continue;
+        const need = N - x;
+        const top = need > 0 ? cheapestAtLeast(tiers, need) : null;
+        if (need > 0 && !top) continue;
+        const parts = build(x);
+        if (top) parts.push({ n: 1, t: top });
+        consider(dp[x] + (top ? top.cny : 0), x + (top ? top.base : 0), mergeParts(parts));
+      }
     }
   } else if (small.length) {
     // 数量极大（> 30000）：按「整包批量 + 余数补一档」推算（此量级基本都有整包直供）
@@ -1812,7 +1919,7 @@ function comboOf(tiers, N) {
       const k = Math.floor(N / t.base);
       if (k < 1) return;
       const rem = N - k * t.base;
-      const top = rem > 0 ? cheapestAtLeast(tiers, rem) : null;
+      const top = rem > 0 ? pickTop(tiers, rem) : null;
       if (rem > 0 && !top) return;
       const parts = [{ n: k, t }];
       if (top) parts.push({ n: 1, t: top });
@@ -1822,21 +1929,114 @@ function comboOf(tiers, N) {
   return best;
 }
 
-/* 对外接口：allowCombo=true 时允许「多档凑够」，否则只认单档 */
-function qtyFit(d, N, allowCombo) {
+/* 对外接口：allowCombo=true 时允许「多档凑够」，否则只认单档；byPer 决定判定口径 */
+function qtyFit(d, N, allowCombo, byPer) {
   const tiers = qtyTiers(d);
   const max = tiers.reduce((m, t) => Math.max(m, t.base), 0);
-  const wrap = (cost, got, parts) => ({
-    cny: cost, base: got, qty: partsText(parts),
-    coupon: parts.length === 1 ? (parts[0].t.coupon || '') : '',
-    parts, combo: parts.length > 1 || parts[0].n > 1
-  });
+  const wrap = (cost, got, parts) => {
+    const combo = parts.length > 1 || parts[0].n > 1;
+    return {
+      cny: cost, base: got, qty: partsText(parts, combo),
+      coupon: parts.length === 1 ? (parts[0].t.coupon || '') : '',
+      parts, combo
+    };
+  };
   if (allowCombo) {
-    const c = comboOf(tiers, N);
+    const c = comboOf(tiers, N, byPer);
     return { best: c ? wrap(c.cost, c.got, c.parts) : null, max, allowCombo: true };
   }
-  const one = cheapestAtLeast(tiers, N);
+  const one = (byPer ? bestPerAtLeast : cheapestAtLeast)(tiers, N);
   return { best: one ? wrap(one.cny, one.base, [{ n: 1, t: one }]) : null, max, allowCombo: false };
+}
+
+/* ===== 按 RMB 预算对比：给定预算 B（元），求该分区「怎么买最划算」 =====
+   判定口径 byPer：
+     false → 在「花费 ≤ 预算」的方案里取 **买到的数量最多**
+     true  → 在「花费 ≤ 预算」的方案里取 **每币均价最低**（买得多 ≠ 单价便宜）
+   允许组合 = 完全背包（可重复买同一档；把钱换算成整数「分」做 DP，是精确解）
+   不允许组合 = 只能买一档
+   预算极大时（> ¥6000）改按单价贪心，属近似解，会在说明里标注。 */
+function budgetFit(d, B, allowCombo, byPer) {
+  const tiers = qtyTiers(d);
+  if (!tiers.length) return { best: null, min: 0, allowCombo: !!allowCombo };
+  const min = Math.min.apply(null, tiers.map(t => t.cny));
+  const wrap = parts => {
+    let cny = 0, base = 0;
+    parts.forEach(p => { cny += p.n * p.t.cny; base += p.n * p.t.base; });
+    const combo = parts.length > 1 || parts[0].n > 1;
+    return { cny, base, qty: partsText(parts, combo), parts,
+             coupon: parts.length === 1 ? (parts[0].t.coupon || '') : '',
+             combo };
+  };
+  if (!allowCombo) {
+    const ok = tiers.filter(t => t.cny <= B + 1e-9);
+    if (!ok.length) return { best: null, min, allowCombo: false };
+    ok.sort(byPer
+      ? (a, b) => (a.up - b.up) || (b.base - a.base)      // 每币均价最低
+      : (a, b) => (b.base - a.base) || (a.cny - b.cny));  // 实得最多，同数量取更便宜
+    return { best: wrap([{ n: 1, t: ok[0] }]), min, allowCombo: false };
+  }
+  const C = Math.round(B * 100);
+  if (C <= 0) return { best: null, min, allowCombo: true };
+  if (C <= 600000) {                                   // 预算 ≤ ¥6000：整数分完全背包
+    const cost = tiers.map(t => Math.max(1, Math.round(t.cny * 100)));
+    const dp = new Array(C + 1).fill(-1);              // dp[c] = 花掉 c 分时能买到的最多数量
+    const from = new Array(C + 1).fill(-1);
+    dp[0] = 0;
+    for (let c = 0; c <= C; c++) {
+      if (dp[c] < 0) continue;
+      for (let i = 0; i < tiers.length; i++) {
+        const nc = c + cost[i];
+        if (nc > C) continue;
+        const nv = dp[c] + tiers[i].base;
+        if (nv > dp[nc]) { dp[nc] = nv; from[nc] = i; }
+      }
+    }
+    // byPer：取「每币均价最低」的那个花费点（注意 dp[c] 是该花费下能买到的最多数量）
+    let bi = -1;
+    if (byPer) {
+      let bv = Infinity;
+      for (let c = 1; c <= C; c++) {
+        if (dp[c] <= 0) continue;
+        const v = c / dp[c];
+        if (v < bv - 1e-12) { bv = v; bi = c; }
+      }
+    } else {
+      bi = 0;
+      for (let c = 1; c <= C; c++) if (dp[c] > dp[bi]) bi = c;
+    }
+    if (bi < 0 || dp[bi] <= 0) return { best: null, min, allowCombo: true };
+    const parts = [];
+    let cur = bi;
+    while (cur > 0 && from[cur] >= 0) {
+      parts.push({ n: 1, t: tiers[from[cur]] });
+      cur -= cost[from[cur]];
+    }
+    return { best: wrap(mergeParts(parts)), min, allowCombo: true };
+  }
+  // 预算极大：按单价从低到高贪心（近似解）
+  const sorted = tiers.slice().sort((a, b) => a.up - b.up);
+  const parts = [];
+  let left = C;
+  sorted.forEach(t => {
+    const cst = Math.max(1, Math.round(t.cny * 100));
+    const k = Math.floor(left / cst);
+    if (k > 0) { parts.push({ n: k, t }); left -= k * cst; }
+  });
+  if (!parts.length) return { best: null, min, allowCombo: true };
+  return { best: wrap(mergeParts(parts)), min, allowCombo: true, approx: true };
+}
+
+/* 一次性档位：首充 / 次充 每个人只能买**一次**。
+   在「按数量」「按预算」对比里，多档组合 / 重复买对它们**不成立** —— 只能作为数学上限参考，
+   所以结果表里要单独打「限一次」标记并在说明里写清楚。 */
+function isOnceOnly(pick) {
+  const t = String((pick && pick.label) || '') + ' ' + String(((pick && pick.sec) || {}).title || '');
+  return /首充|次充/.test(t);
+}
+function onceWarnHtml() {
+  return `<br><b style="color:var(--red)">⚠ 注意：带 <span class="tag limited">限一次</span> 标记的是 <b>首充 / 次充</b> 分区，
+    每个人<b>只能买一次</b>；「多档组合」「重复买」对它们只是<b>数学最优</b>，实际做不到 —— 看到组合方案请按「只能买一档」理解。</b>`;
 }
 
 /* 单位词：Per/1c → 币，Per/65p / Per/100P → 点，Ridi·Mrblue 的 Per/100 → 留空只报数字 */
@@ -1851,19 +2051,31 @@ function renderCompare() {
   const opts = compareOptions();
   const picked = Object.keys(dataStore).map(p => opts.filter(o => o.p === p)).filter(a => a.length);
   const N = cmpQty > 0 ? cmpQty : 0;
+  const B = cmpBudget > 0 ? cmpBudget : 0;
 
   // 先算好每项：① 卡片按「最省」排序 ② 选择器序号 = 卡片排名（两处数字一致，避免混淆）
   const calced = cmpPicks.map(pick => ({ pick, d: optionCalc(pick) }));
   // 数量模式：为每一项求出「买到 ≥ N 个」的最省买法（可含多档组合）
-  if (N) calced.forEach(c => { c.q = qtyFit(c.d, N, allowCombo); });
+  if (N) calced.forEach(c => { c.q = qtyFit(c.d, N, allowCombo, cmpByPer); });
+  if (B) calced.forEach(c => { c.b = budgetFit(c.d, B, allowCombo, cmpByPer); });
 
   // 排序：数量模式按「凑够 N 个的花费」；普通模式按 Per。凑不够 N 的排最后。
+  const uOf = o => (o && o.base > 0) ? (o.cny / o.base) : Infinity;
   const ranked = [...calced].sort((a, b) => {
     if (N) {
       const qa = a.q.best, qb = b.q.best;
-      if (qa && qb) return qa.cny - qb.cny;
+      if (qa && qb) return cmpByPer ? ((uOf(qa) - uOf(qb)) || (qa.cny - qb.cny)) : (qa.cny - qb.cny);
       if (qa) return -1;
       if (qb) return 1;
+    } else if (B) {
+      const ba = a.b.best, bb = b.b.best;
+      if (ba && bb) {
+        return cmpByPer
+          ? ((uOf(ba) - uOf(bb)) || (ba.cny - bb.cny))
+          : ((bb.base - ba.base) || (ba.cny - bb.cny));
+      }
+      if (ba) return -1;
+      if (bb) return 1;
     }
     return a.d.best.per - b.d.best.per;
   });
@@ -1880,16 +2092,28 @@ function renderCompare() {
       <input id="cmp-qty" type="text" inputmode="numeric" autocomplete="off" maxlength="9" value="${N || ''}" placeholder="如 400">
       <span>个</span>
       <label class="cmb"><input type="checkbox" id="cmp-combo"${allowCombo ? ' checked' : ''}> 允许多档组合</label>
+      <label class="cmb"><input type="checkbox" id="cmp-byper"${cmpByPer ? ' checked' : ''}> 按每币均价最低</label>
       ${N ? '<button class="chip ghost" data-qtyclear="1">清除数量</button>' : ''}
       <span class="qtyhint">${N
-        ? `已开启：按「买到 <b>${N}</b> 个」的最省买法算花费${allowCombo ? '（单档不够时会<b>多档组合</b>凑够）' : '（只看单档，凑不够就算不足）'}，排序与 <b>Best</b> 也跟着变。`
-        : `填一个数量（币 / 点），就能按「买到 ≥ 该数量」的最省买法对比各项花费 —— 例如想买 400 个币时，比 Bom 的首充 / 双倍 / 节日活动哪个便宜；数量超过单档上限时会自动多档组合凑够。`}</span>
+        ? `已开启：在「买到 ≥ <b>${N}</b> 个」的所有组合里，按<b>${cmpByPer ? '每币均价最低' : '总价最低'}</b>挑方案并排名${allowCombo ? '（单档不够时会<b>多档组合</b>凑够）' : '（只看单档，凑不够就算不足）'}。${onceWarnHtml()}`
+        : `填一个数量（币 / 点），就能对比各项「买到 ≥ 该数量」的组合哪个<b>每币更便宜</b> —— 例如想买 400 个币时，比 Bom 的首充 / 双倍 / 节日活动哪个组合的单价更低；数量超过单档上限时会自动多档组合凑够。默认按<b>每币均价</b>排，取消勾选「按每币均价最低」就改回按总价排。`}</span>
     </div>
     ${picked.map(list => `<div class="cmp-grp"><span class="cmp-plat">${list[0].p}</span>
       ${list.map(o => {
         const on = cmpPicks.some(x => x.id === o.id);
         return `<button class="chip${on ? ' on' : ''}" data-id="${o.id}">${o.label}${on ? `<span class="n">${rankOf[o.id]}</span>` : ''}</button>`;
       }).join('')}</div>`).join('')}
+    <div class="cmp-qtybar${B ? ' on' : ''}">
+      <span class="lab">按预算对比</span>
+      <span>预算</span>
+      <span>¥</span>
+      <input id="cmp-budget" type="text" inputmode="decimal" autocomplete="off" maxlength="9" value="${B || ''}" placeholder="如 200">
+      <label class="cmb"><input type="checkbox" id="cmp-byper2"${cmpByPer ? ' checked' : ''}> 按每币均价最低</label>
+      ${B ? '<button class="chip ghost" data-budgetclear="1">清除预算</button>' : ''}
+      <span class="qtyhint">${B
+        ? `已开启：在「花费 ≤ ¥<b>${B}</b>」的所有组合里，按<b>${cmpByPer ? '每币均价最低' : '买到的数量最多'}</b>挑方案并排名${allowCombo ? '（可重复买 / 多档组合）' : '（只买一档）'}。${onceWarnHtml()}`
+        : `填一个 RMB 预算（如 200），就能对比「同样的钱在各项里怎么买<b>每币更便宜</b>」—— 例如 ¥200 在 Lezhin 首充 / 韩bom 双倍 / Ridi 平时分别能拿到什么单价。与「按数量」二选一，填一个另一个自动清空。`}</span>
+    </div>
     <div class="cmp-grp cmp-grp-clear"><span class="cmp-plat"></span>
       <button class="chip ghost" data-clear="1">清空选择</button>
     </div>
@@ -1913,8 +2137,8 @@ function renderCompare() {
       const extra = b.base - N;
       return `<tr class="${i === 0 ? 'is-best' : ''}">
         <td class="c-rank">${i + 1}</td>
-        <td class="c-text">${item}${i === 0 ? ' <span class="badge">Best</span>' : ''}</td>
-        <td class="c-qty">${b.qty}${b.combo ? '<span class="tag gold">组合</span>' : ''}${b.coupon ? `<div class="sub">用券：${b.coupon}</div>` : ''}</td>
+        <td class="c-text">${item}${i === 0 ? ' <span class="badge">Best</span>' : ''}${isOnceOnly(x.pick) ? ' <span class="tag limited">限一次</span>' : ''}</td>
+        <td class="c-qty">${b.qty}${b.combo ? '<span class="tag gold">组合</span>' : ''}${isOnceOnly(x.pick) && b.combo ? '<div class="sub" style="color:var(--red)">⚠ 首充 / 次充 只能买一次，组合实际做不到</div>' : ''}${b.coupon ? `<div class="sub">用券：${b.coupon}</div>` : ''}</td>
         <td class="c-qty">${b.base}${extra > 0 ? `<div class="sub">多 ${extra}</div>` : ''}</td>
         <td class="c-price">¥${b.cny.toFixed(2)}</td>
         <td class="c-unit">${(b.cny / b.base).toFixed(3)} ¥/${uw || '个'}</td>
@@ -1924,16 +2148,18 @@ function renderCompare() {
     const b0 = ranked[0].q.best;
     let qfoot;
     if (b0) {
-      qfoot = `结论：想买 <b>${N}</b> 个时，<b>${ranked[0].pick.p} · ${ranked[0].pick.label}</b> 最省 —— ${b0.combo ? '最省买法 <b>' + b0.qty + '</b>' : '需买「' + b0.qty + '」档'}（实得 ${b0.base}${u0 ? ` ${u0}` : ''}），约 <b>¥${b0.cny.toFixed(2)}</b>。`;
+      const u0v = b0.base ? b0.cny / b0.base : 0;
+      qfoot = `结论：想买 <b>${N}</b> 个时，按「<b>每${u0 || '个'}均价最低</b>」算，<b>${ranked[0].pick.p} · ${ranked[0].pick.label}</b> 最划算 —— ${b0.combo ? '组合买法 <b>' + b0.qty + '</b>' : '需买「' + b0.qty + '」档'}（实得 ${b0.base}${u0 ? ` ${u0}` : ''}），花 ¥${b0.cny.toFixed(2)}，均价 <b>${u0v.toFixed(3)} 元/${u0 || '个'}</b>。`;
       const second = ranked[1] && ranked[1].q && ranked[1].q.best;
-      if (second && second.cny > b0.cny) {
-        qfoot += ` 比次选（${ranked[1].pick.p} · ${ranked[1].pick.label} ¥${second.cny.toFixed(2)}）省 ¥${(second.cny - b0.cny).toFixed(2)}。`;
+      if (second && second.base) {
+        const u1v = second.cny / second.base;
+        if (u1v > u0v) qfoot += ` 次选（${ranked[1].pick.p} · ${ranked[1].pick.label}）均价 ${u1v.toFixed(3)} 元/${u0 || '个'}，比它贵 ${((u1v / u0v - 1) * 100).toFixed(1)}%。`;
       }
     } else {
       qfoot = `结论：所选分区单档都凑不够 <b>${N}</b> 个 —— 勾上「允许多档组合」就可以用多档凑够。`;
     }
     qfoot += `<br>注：「${N} 个」按 <b>实得数量</b> 算（含赠送，如 20+10=30 记 30）；<b>Lezhin / Lezhinus 首充的数量里带 p 的是积分、不是币</b>，所以只按永久币计算。`
-      + (allowCombo ? '组合为「同一分区里买多档凑够」的最省解；像「首充 / 次充」这种一次性档位，组合只是数学最优、实际不能重复买。' : '')
+      + (allowCombo ? '组合为「同一分区里买多档凑够」的最省解。<b style="color:var(--red)">但「首充 / 次充」是一次性档位、只能买一次，表里已打「限一次」标记 —— 这类项的「组合」只是数学最优，实际买不到，请按「只能买其中一档」理解。</b>' : '')
       + '各平台单位不同（Bom·Lezhin 是币，Tappytoon·Beltoon 是点，Ridi·Mrblue 是自有单位），跨平台只看花销量级。';
 
     qtyBlock = `<div class="qty-rank">
@@ -1949,19 +2175,75 @@ function renderCompare() {
     </div>`;
   }
 
+  // ===== 预算对比结果表（仅在填了预算时出现）=====
+  let budgetBlock = '';
+  if (B) {
+    const u0 = unitWord(ranked[0].d.plat);
+    const rowsHtml = ranked.map((x, i) => {
+      const b = x.b.best, uw = unitWord(x.d.plat);
+      const item = `${x.pick.p} · ${x.pick.label}`;
+      if (!b) {
+        return `<tr><td class="c-rank">–</td><td class="c-text">${item}</td>
+          <td class="c-qty na" colspan="5">预算不足：该分区最低一档也要 ¥${x.b.min.toFixed(2)}</td></tr>`;
+      }
+      return `<tr class="${i === 0 ? 'is-best' : ''}">
+        <td class="c-rank">${i + 1}</td>
+        <td class="c-text">${item}${i === 0 ? ' <span class="badge">Best</span>' : ''}${isOnceOnly(x.pick) ? ' <span class="tag limited">限一次</span>' : ''}</td>
+        <td class="c-qty">${b.qty}${b.combo ? '<span class="tag gold">组合</span>' : ''}${isOnceOnly(x.pick) && b.combo ? '<div class="sub" style="color:var(--red)">⚠ 首充 / 次充 只能买一次，组合实际做不到</div>' : ''}${b.coupon ? `<div class="sub">用券：${b.coupon}</div>` : ''}</td>
+        <td class="c-qty">${b.base}</td>
+        <td class="c-price">¥${b.cny.toFixed(2)}</td>
+        <td class="c-price">¥${(B - b.cny).toFixed(2)}</td>
+        <td class="c-unit">${(b.cny / b.base).toFixed(3)} ¥/${uw || '个'}</td>
+      </tr>`;
+    }).join('');
+
+    const b0 = ranked[0].b.best;
+    let bfoot;
+    if (b0) {
+      const u0v = b0.base ? b0.cny / b0.base : 0;
+      bfoot = `结论：预算 <b>¥${B}</b> 时，按「<b>每${u0 || '个'}均价最低</b>」算，<b>${ranked[0].pick.p} · ${ranked[0].pick.label}</b> 最划算 —— 买 <b>${b0.base}</b>${u0 ? ' ' + u0 : ' 个'}（${b0.combo ? '组合 ' + b0.qty : '「' + b0.qty + '」档'}），花掉 ¥${b0.cny.toFixed(2)}，剩 ¥${(B - b0.cny).toFixed(2)}，均价 <b>${u0v.toFixed(3)} 元/${u0 || '个'}</b>。`;
+      const second = ranked[1] && ranked[1].b && ranked[1].b.best;
+      if (second && second.base) {
+        const u1v = second.cny / second.base;
+        if (u1v > u0v) bfoot += ` 次选（${ranked[1].pick.p} · ${ranked[1].pick.label}）均价 ${u1v.toFixed(3)} 元/${u0 || '个'}，比它贵 ${((u1v / u0v - 1) * 100).toFixed(1)}%。`;
+      }
+    } else {
+      bfoot = `结论：所选分区在 ¥${B} 预算下一档都买不起 —— 提高预算，或换一个起始档位更低的分区。`;
+    }
+    bfoot += `<br>注：按「花费 ≤ ¥${B}」求最多能买到的<b>实得数量</b>；${allowCombo ? '允许重复买同一档与多档组合（换算成整数分做完全背包，精确解）' : '只买一档（不组合）'}。数量含赠送（20+10=30 记 30）；Lezhin / Lezhinus 首充带 p 的是积分不算币。`
+      + `<br><b style="color:var(--red)">⚠ 首充 / 次充 只能买一次：预算模式的「重复买同一档 / 多档组合」对这类分区不成立，表里已打「限一次」标记 —— 实际最多只能买其中一档，请按此折算。</b>`;
+    if (ranked.some(x => x.b && x.b.approx)) bfoot += ` 预算超过 ¥6000 时改用按单价贪心的<b>近似解</b>。`;
+
+    budgetBlock = `<div class="qty-rank">
+      <div class="section-title">按预算对比 · ¥${B}</div>
+      <div class="card"><table>
+        <thead><tr>
+          <th class="c-rank">#</th><th class="c-text">对比项</th><th class="c-qty">买法</th>
+          <th class="c-qty">实得数量</th><th class="c-price">花掉</th><th class="c-price">预算剩余</th><th class="c-unit">均价</th>
+        </tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table></div>
+      <div class="cmp-foot">${bfoot}</div>
+    </div>`;
+  }
+
   // 结果区：与常规页同款结构（衬线小标题 + 普通表格卡），不再有额外外壳 / 绿色摘要框
   const cards = ranked.map((x, ri) => {
     const { pick } = x;
     // 数量模式下，只有真正凑得够 N 个的那一项才配得上 Best
-    const isBest = ri === 0 && (!N || (x.q && x.q.best));
+    const isBest = ri === 0 && (!N && !B ? true : (N ? !!(x.q && x.q.best) : !!(x.b && x.b.best)));
     const tail = isBest ? ' <span class="badge">Best</span>' : '';
     const costLine = N
       ? (x.q.best
-          ? `<div class="cmp-cost">买 ${N} 个 → ${x.q.best.combo ? `组合：<b>${x.q.best.qty}</b>` : `需「${x.q.best.qty}」档`}（实得 ${x.q.best.base}）· ≈ <b>¥${x.q.best.cny.toFixed(2)}</b>${x.q.best.coupon ? `（用券：${x.q.best.coupon}）` : ''}</div>`
+          ? `<div class="cmp-cost">买 ${N} 个 → ${x.q.best.combo ? `组合：<b>${x.q.best.qty}</b>` : `需「${x.q.best.qty}」档`}（实得 ${x.q.best.base}）· ≈ <b>¥${x.q.best.cny.toFixed(2)}</b>，均价 <b>${(x.q.best.cny / x.q.best.base).toFixed(3)}</b> 元/个${x.q.best.coupon ? `（用券：${x.q.best.coupon}）` : ''}${isOnceOnly(pick) ? ' <span class="tag limited">限一次</span>' : ''}</div>`
           : `<div class="cmp-cost na">买 ${N} 个 → ${allowCombo ? '凑不够' : '单档不够（可勾选「允许多档组合」）'}（该分区最高 ${x.q.max} 个）</div>`)
+      : B
+      ? (x.b.best
+          ? `<div class="cmp-cost">预算 ¥${B} → 最多买 <b>${x.b.best.base}</b> 个（${x.b.best.combo ? `组合：<b>${x.b.best.qty}</b>` : `「${x.b.best.qty}」档`}），花掉 ≈ <b>¥${x.b.best.cny.toFixed(2)}</b>，剩 ¥${(B - x.b.best.cny).toFixed(2)}，均价 <b>${(x.b.best.cny / x.b.best.base).toFixed(3)}</b> 元/个${isOnceOnly(pick) ? ' <span class="tag limited">限一次</span>' : ''}</div>`
+          : `<div class="cmp-cost na">预算 ¥${B} → 买不起任何一档（该分区最低 ¥${x.b.min.toFixed(2)}）</div>`)
       : '';
     return `<div class="cmp-item">
-      <div class="section-title">${ri + 1} · ${pick.p} · ${pick.label}${tail}</div>
+      <div class="section-title">${ri + 1} · ${pick.p} · ${pick.label}${tail}${isOnceOnly(pick) ? ' <span class="tag limited">限一次</span>' : ''}</div>
       ${costLine}
       ${renderPickTable(pick)}
     </div>`;
@@ -1972,9 +2254,17 @@ function renderCompare() {
   if (N) {
     const b0 = ranked[0].q.best;
     foot = b0
-      ? `结论：按数量算，想买 <b>${N}</b> 个时最省的是 <b>${best.pick.p} · ${best.pick.label}</b>（${b0.combo ? '最省买法 ' + b0.qty : '需买「' + b0.qty + '」档'}，实得 ${b0.base}，约 ¥${b0.cny.toFixed(2)}）。`
+      ? `结论：按数量算，想买 <b>${N}</b> 个时<b>每币最便宜</b>的是 <b>${best.pick.p} · ${best.pick.label}</b>（${b0.combo ? '组合买法 ' + b0.qty : '需买「' + b0.qty + '」档'}，实得 ${b0.base}，花 ¥${b0.cny.toFixed(2)}，均价 ${(b0.cny / b0.base).toFixed(3)} 元/个）。`
       : `结论：所选分区均凑不够 ${N} 个。`;
-    foot += `<br>注：数量模式按「实得数量 ≥ ${N}」的最省买法排序，可跨平台混选（如 Bom 首充 vs 双倍 vs 节日）。组合 = 同一分区里买多档凑够；首充 / 次充 是一次性档位，组合仅供参考。各平台「个」的含义不同，跨平台只比花销量级。`;
+    foot += `<br>注：数量模式按「实得数量 ≥ ${N}」的最省买法排序，可跨平台混选（如 Bom 首充 vs 双倍 vs 节日）。组合 = 同一分区里买多档凑够。`
+      + `<br><b style="color:var(--red)">⚠ 首充 / 次充 只能买一次</b>（表里已打「限一次」标记）：这类项的组合 / 重复买只是数学最优，实际做不到，请按「只能买其中一档」看。`;
+  } else if (B) {
+    const b0 = ranked[0].b.best;
+    foot = b0
+      ? `结论：按预算算，<b>¥${B}</b> 在 <b>${best.pick.p} · ${best.pick.label}</b> 里<b>每币最便宜</b> —— 买 <b>${b0.base}</b> 个（${b0.combo ? '组合 ' + b0.qty : '「' + b0.qty + '」档'}），花掉 ¥${b0.cny.toFixed(2)}，剩 ¥${(B - b0.cny).toFixed(2)}，均价 ${(b0.cny / b0.base).toFixed(3)} 元/个。`
+      : `结论：所选分区在 ¥${B} 预算下都买不起任何一档。`;
+    foot += `<br>注：预算模式按「花费 ≤ ¥${B}」求能买到的<b>最多实得数量</b>排序（${allowCombo ? '允许重复买 / 多档组合，换算成整数分做完全背包，精确解' : '只买一档'}）。「实得数量」含赠送（如 20+10=30 记 30）；Lezhin / Lezhinus 首充带 p 的是积分、不算币。`
+      + `<br><b style="color:var(--red)">⚠ 首充 / 次充 只能买一次</b>（表里已打「限一次」标记）：预算模式里的「重复买 / 多档组合」对这类项不成立，实际最多只能买其中一档。`;
   } else if (ranked.length > 1 && isFinite(worst.d.best.per) && worst.d.best.per > 0) {
     const diff = (worst.d.best.per - best.d.best.per) / worst.d.best.per * 100;
     foot = `结论：<b>${best.pick.p} · ${best.pick.label}</b> 最省（${best.d.perLabel} ¥${best.d.best.per.toFixed(2)}），比最贵的一项（${worst.pick.p} · ${worst.pick.label} ¥${worst.d.best.per.toFixed(2)}）低 ${diff.toFixed(1)}%。`;
@@ -1984,8 +2274,263 @@ function renderCompare() {
     foot += `<br>注：各平台 Per 基准不同（1 币 / 100 韩元 / 65 点等），跨平台只看量级与趋势；同平台内部对比最精确。券后价分区取「该档最划算的那张券」。`;
   }
 
-  return picker + qtyBlock + `<div class="cmp-list n${Math.min(ranked.length, 4)}">${cards}</div><div class="cmp-foot">${foot}</div>`;
+  return picker + qtyBlock + budgetBlock + `<div class="cmp-list n${Math.min(ranked.length, 4)}">${cards}</div><div class="cmp-foot">${foot}</div>`;
 
+}
+
+/* ================= 自助计算 · Custom Calculator ================= */
+/* 场景：表里没有的新组合（新活动 / 新券 / 新区服价），自己填「币种 + 价格 + 实得数量」，
+   按所选平台的指标实时算折合 RMB 与各档 Per —— Lezhin Per/1c·2c·3c，Ridi·Mrblue Per/100…600，
+   Tappytoon Per/100P…400P，Beltoon Per/65p…52p。列随平台自动变，不用改代码。 */
+const CALC_CURS = ['KRW', 'USD', 'JPY', 'HKD', 'CNY'];
+
+function attr(v) {
+  return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+/* 价格：去掉千分位逗号后取数字 */
+function numOf(v) {
+  const n = parseFloat(String(v == null ? '' : v).replace(/[,，\s]/g, ''));
+  return isFinite(n) ? n : NaN;
+}
+/* 数量：支持「20+10」这种赠送写法，自动求和；也支持纯数字 */
+function qtyOf(v) {
+  const s = String(v == null ? '' : v);
+  const m = s.match(/[\d.]+/g);
+  if (!m) return NaN;
+  const nums = m.map(Number).filter(n => isFinite(n));
+  if (!nums.length) return NaN;
+  return nums.reduce((a, b) => a + b, 0);
+}
+function fmtUnit(v) { return '¥' + (v >= 1 ? v.toFixed(2) : v.toFixed(4)); }
+
+/* 一组「币种 + 价格 + 实得数量」→ 一条渠道结果（折合 RMB + 该平台第一个 Per） */
+function customChannelOf(cur, priceV, qtyV, plat) {
+  const price = numOf(priceV), base = qtyOf(qtyV);
+  if (!isFinite(price) || price <= 0 || !isFinite(base) || base <= 0) return null;
+  const rate = cur === 'CNY' ? 1 : (rates[cur] || 0);
+  if (!rate) return null;
+  const cny = price * rate;
+  const x0 = (plat.perX || [1])[0];
+  return {
+    label: cur === 'CNY' ? '自定义（RMB）' : ('自定义 · ' + (CUR_NAME[cur] || cur)),
+    cur, price, base, qty: String(base), cls: 'grp-main', note: '自己填的价格 / 数量',
+    cny, per: cny / base * x0, best: true,
+    sym: cur === 'CNY' ? '¥' : (CURRENCY_SYMBOL[cur] || '')
+  };
+}
+/* 今日花费里的「自定义金额」输入 → 渠道列表 */
+function customChannel(plat) {
+  const c = customChannelOf(spendCustom.cur, spendCustom.price, spendCustom.qty, plat);
+  return c ? [c] : [];
+}
+/* 清单 / 历史里的一笔自定义项 → 展示用数据 */
+function customItemChannel(item, pl) {
+  const c = (item && item.custom) || spendCustom;
+  const ch = customChannelOf(c.cur, c.price, c.qty, pl);
+  if (!ch) return null;
+  return { tier: '自定义 ' + ch.sym + ch.price.toLocaleString() + ' → 实得 ' + ch.base,
+           chLabel: ch.label, cny: ch.cny, got: ch.base };
+}
+
+/* 自助计算：当前输入 → 预览结果（含该平台全部 Per 值） */
+function calcPreview() {
+  const plat = dataStore[calcSel.p];
+  if (!plat) return null;
+  const ch = customChannelOf(calcSel.cur, calcSel.price, calcSel.qty, plat);
+  if (!ch) return null;
+  const xs = plat.perX || [1];
+  return { plat, ch, per: xs.map(x => ch.cny / ch.base * x) };
+}
+
+function calcHeroHtml() {
+  const plat = dataStore[calcSel.p] || {};
+  const pv = calcPreview();
+  const uw = unitWord(plat);
+  const ls = plat.perLabels || ['Per'];
+  if (!pv) {
+    return `<div class="sh-item">
+        <div class="sh-t">折合 RMB</div>
+        <div class="sh-v" style="color:var(--muted)">—</div>
+        <div class="sh-m">填好「价格」和「实得数量」后，这里实时出结果</div>
+      </div>
+      <div class="sh-item">
+        <div class="sh-t">${ls[0]}</div>
+        <div class="sh-v" style="color:var(--muted)">—</div>
+        <div class="sh-m">当前平台 <b>${calcSel.p}</b>，指标为 ${ls.join(' / ')}${uw ? '（单位：' + uw + '）' : ''}</div>
+      </div>`;
+  }
+  const ch = pv.ch;
+  const xs = plat.perX || [1];
+  const rate = ch.cur === 'CNY' ? 1 : (rates[ch.cur] || 0);
+  const items = [];
+  items.push(`<div class="sh-item">
+      <div class="sh-t">折合 RMB</div>
+      <div class="sh-v">¥${ch.cny.toFixed(2)}</div>
+      <div class="sh-m">${ch.sym}${ch.price.toLocaleString()}（${CUR_NAME[ch.cur] || ch.cur}）· 1 ${CUR_NAME[ch.cur] || ch.cur} ≈ ${rate.toFixed(5)} 元</div>
+    </div>`);
+  items.push(`<div class="sh-item">
+      <div class="sh-t">实得数量</div>
+      <div class="sh-v">${ch.base}</div>
+      <div class="sh-m">${uw ? '单位：' + uw + ' · ' : ''}每 1 ${uw || '个'} ≈ ${fmtUnit(ch.cny / ch.base)}</div>
+    </div>`);
+  ls.forEach((l, i) => {
+    items.push(`<div class="sh-item">
+      <div class="sh-t">${l}</div>
+      <div class="sh-v">¥${pv.per[i].toFixed(2)}</div>
+      <div class="sh-m">¥${ch.cny.toFixed(2)} ÷ ${ch.base} × ${xs[i]}</div>
+    </div>`);
+  });
+  return items.join('');
+}
+
+function renderCalc() {
+  const plats = Object.keys(dataStore);
+  if (!dataStore[calcSel.p]) calcSel.p = plats[0];
+  const plat = dataStore[calcSel.p];
+  if (!calcSel.cur) calcSel.cur = plat.currency;
+  const ls = plat.perLabels || ['Per'];
+  const uw = unitWord(plat);
+
+  const picker = `<div class="spend-picker calc-picker">
+    <label>平台（决定 Per 列）
+      <select id="cl-p">${plats.map(pp => `<option value="${pp}"${pp === calcSel.p ? ' selected' : ''}>${pp}</option>`).join('')}</select>
+    </label>
+    <label>币种
+      <select id="cl-cur">${CALC_CURS.map(c => `<option value="${c}"${c === calcSel.cur ? ' selected' : ''}>${CUR_NAME[c]} ${CURRENCY_SYMBOL[c]}</option>`).join('')}</select>
+    </label>
+    <label>价格（${CUR_NAME[calcSel.cur] || ''}）
+      <input id="cl-price" type="text" inputmode="decimal" autocomplete="off" value="${attr(calcSel.price)}" placeholder="如 9900">
+    </label>
+    <label>实得数量（可写 20+10）
+      <input id="cl-qty" type="text" inputmode="numeric" autocomplete="off" value="${attr(calcSel.qty)}" placeholder="如 20+10">
+    </label>
+    <label>备注（可选）
+      <input id="cl-name" type="text" autocomplete="off" value="${attr(calcSel.name)}" placeholder="如 新活动">
+    </label>
+    <button class="btn tool sp-add" id="cl-add" type="button"${calcPreview() ? '' : ' disabled'}>加入结果表</button>
+    <button class="btn tool" id="cl-add2" type="button"${calcPreview() ? '' : ' disabled'}>直接加入今日清单</button>
+    <div class="hint">口径：折合 RMB = 价格 × 实时汇率；Per = 折合 RMB ÷ 实得数量 × 系数（本平台为 ${ls.join(' / ')}）。
+      数量支持 <b>20+10</b> 这种「赠送」写法（自动求和）。「实得数量」请填<b>到账总数</b>（含赠送）。
+      同一条可以多平台各加一次 —— 结果表按平台<b>自动分组</b>，各组用自己的 Per 列。
+          算好之后：点「加入结果表」横向对比，或点「<b>直接加入今日清单</b>」把它按今天存进花费记录（结果表里每行也有「加清单」）。</div>
+  </div>`;
+
+  const hero = `<div class="spend-hero" id="cl-hero">${calcHeroHtml()}</div>`;
+
+  const groups = [];
+  calcRows.forEach(r => {
+    let g = groups.find(x => x.p === r.p);
+    if (!g) { g = { p: r.p, rows: [] }; groups.push(g); }
+    g.rows.push(r);
+  });
+
+  const cards = groups.map(g => {
+    const pl = dataStore[g.p] || plat;
+    const gl = pl.perLabels || ['Per'];
+    const gx = pl.perX || [1];
+    const calced = g.rows.map(r => {
+      const ch = customChannelOf(r.cur, r.price, r.qty, pl);
+      return ch ? { r, ch, per: gx.map(x => ch.cny / ch.base * x) } : null;
+    });
+    const ok = calced.filter(Boolean);
+    let bi = 0;
+    ok.forEach((x, i) => { if (x.per[0] < ok[bi].per[0]) bi = i; });
+    const bestId = ok.length ? ok[bi].r.id : null;
+    const body = g.rows.map((r, ri) => {
+      const c = calced[ri];
+      if (!c) return `<tr><td class="c-text">${r.name || '—'}</td><td class="c-qty na" colspan="${4 + gl.length}">价格 / 数量无效</td><td class="c-x"></td></tr>`;
+      const isB = r.id === bestId;
+      return `<tr class="${isB ? 'ch-best' : ''}">
+        <td class="c-text">${r.name || '—'}${isB ? ' <span class="badge">Best</span>' : ''}</td>
+        <td class="c-price">${c.ch.sym}${Number(c.ch.price).toLocaleString()}</td>
+        <td class="c-price">¥${c.ch.cny.toFixed(2)}</td>
+        <td class="c-qty">${c.ch.base}</td>
+        <td class="c-price">${fmtUnit(c.ch.cny / c.ch.base)}</td>
+        ${gl.map((l, i) => `<td class="c-per">${c.per[i].toFixed(2)}</td>`).join('')}
+        <td class="c-x"><button class="rm plus" data-calctospend="${r.id}" type="button">加清单</button> <button class="rm" data-calcrm="${r.id}" type="button">删除</button></td>
+      </tr>`;
+    }).join('');
+    return `<div class="calc-card">
+      <div class="calc-ttl section-title">${g.p} · ${gl.join(' / ')}${unitWord(pl) ? '（单位：' + unitWord(pl) + '）' : ''}</div>
+      <div class="card"><table>
+        <thead><tr>
+          <th class="c-text">备注</th><th class="c-price">价格</th><th class="c-price">折合 RMB</th>
+          <th class="c-qty">实得数量</th><th class="c-price">每 1 ${unitWord(pl) || '个'}</th>
+          ${gl.map(l => `<th class="c-per">${l}</th>`).join('')}
+          <th class="c-x">—</th>
+        </tr></thead>
+        <tbody>${body}</tbody>
+      </table></div>
+    </div>`;
+  }).join('');
+
+  const list = calcRows.length
+    ? `<div class="section-title">结果表 · 共 ${calcRows.length} 条${groups.length > 1 ? `（按平台分 ${groups.length} 组，各组用各自的 Per 列）` : ''}</div>
+       <div class="calc-grid">${cards}</div>
+       <div class="calc-tip">每组内的 <span class="badge">Best</span> = 该平台<b>第一个 Per 指标</b>最低的一条。
+         结果按<b>原样坐标</b>保存（币种 / 价格 / 数量字符串），汇率刷新后会按新汇率重算；存在本机浏览器里，刷新 / 关掉页面都不会丢。
+         要彻底留档就用顶栏「导出计算 CSV」。<br>
+        每行右侧的 <b>加清单</b> = 把这条按<b>今天</b>存进「今日花费」的清单（计入今日合计与历史记录），
+        加完点顶栏「今日花费」就能看到 —— 存的同样是<b>坐标</b>（币种 / 价格 / 数量），汇率变了会跟着重算。</div>
+       <div class="cmp-grp cmp-grp-clear" style="margin-top:10px"><span class="cmp-plat"></span>
+         <button class="chip ghost" data-calcclear="1">清空全部结果</button></div>`
+    : `<div class="cmp-empty">还没有结果 —— 上面填好「币种 + 价格 + 实得数量」后点「加入结果表」，就能累积多条横向对比（可跨平台，按平台自动分组、各自出自己的 Per 列）。</div>`;
+
+  return `<div class="section-title" style="margin-top:0">自助计算 · Custom Calculator</div>` + picker + hero + list;
+}
+
+function calcAdd() {
+  if (!calcPreview()) { toast('请先填好「价格」和「实得数量」'); return; }
+  calcRows.push({
+    id: ++calcSeq, p: calcSel.p, cur: calcSel.cur,
+    price: calcSel.price, qty: calcSel.qty, name: calcSel.name || ''
+  });
+  lsSet(LS_CALC, calcRows);
+  calcSel.price = ''; calcSel.qty = ''; calcSel.name = '';
+  renderContent();
+  const el = document.getElementById('cl-price');
+  if (el) el.focus();
+  toast('已加入结果表：' + calcSel.p);
+}
+/* 把「自助计算」当前输入框里的这一条，直接存进今日花费清单（按今天） */
+function calcAddToSpend() {
+  const pv = calcPreview();
+  if (!pv) { toast('请先填好「价格」和「实得数量」'); return; }
+  if (spendCartDate !== dayKey()) { spendCartDate = dayKey(); spendCart = []; }   // 跨天则先开新的一天
+  spendCart.push({
+    id: ++spendSeq, p: calcSel.p, oid: calcSel.p + '#custom', ri: 0,
+    custom: { cur: calcSel.cur, price: calcSel.price, qty: calcSel.qty }
+  });
+  spendChanged();
+  toast('已加入今日清单：' + calcSel.p + ' · ' + (calcSel.name || '自定义')
+    + ' ≈ ¥' + pv.ch.cny.toFixed(2) + '（点顶栏「今日花费」查看）');
+}
+/* 把结果表里已有的某一条，加进今日花费清单 */
+function calcToSpend(id) {
+  const r = calcRows.find(x => String(x.id) === String(id));
+  if (!r || !dataStore[r.p]) return;
+  const ch = customChannelOf(r.cur, r.price, r.qty, dataStore[r.p]);
+  if (!ch) { toast('这条的价格 / 数量无效，加不进清单'); return; }
+  if (spendCartDate !== dayKey()) { spendCartDate = dayKey(); spendCart = []; }
+  spendCart.push({
+    id: ++spendSeq, p: r.p, oid: r.p + '#custom', ri: 0,
+    custom: { cur: r.cur, price: r.price, qty: r.qty }
+  });
+  spendChanged();
+  toast('已加入今日清单：' + r.p + ' · ' + (r.name || '自定义')
+    + ' ≈ ¥' + ch.cny.toFixed(2) + '（点顶栏「今日花费」查看）');
+}
+
+function calcRm(id) {
+  calcRows = calcRows.filter(r => String(r.id) !== String(id));
+  lsSet(LS_CALC, calcRows);
+  renderContent();
+}
+function calcClear() {
+  calcRows = [];
+  lsSet(LS_CALC, calcRows);
+  renderContent();
+  toast('已清空全部计算结果');
 }
 
 /* ================= 今日花费 · Today's Spending ================= */
@@ -2018,8 +2563,21 @@ function spendOptions() {
         out.push({ p, id: p + '#' + si, label: sec.title, sec, rows: sec.rows });
       }
     });
+    // 每个平台末尾都挂一个「自定义金额」：表里没有的新组合（新活动 / 新券 / 新区服价）自己填
+    out.push({
+      p, id: p + '#custom', label: '✎ 自定义金额（自己填）', custom: true,
+      sec: { title: '自定义金额', currency: null }, rows: []
+    });
   });
   return out;
+}
+
+/* 选渠道：ci = -1 / 空 / 越界 → 自动取最省；ci >= 0 → 指定 channelsOf 的第 ci 个渠道
+   （券后价分区里就是「用哪张券」，iOS 分区里就是「走哪个区」） */
+function pickChannel(chs, ci) {
+  if (!chs || !chs.length) return null;
+  if (ci != null && ci >= 0 && ci < chs.length) return chs[ci];
+  return chs.find(c => c.best) || chs[0];
 }
 
 /* 单个档位 × 所有渠道（网页 / iOS 国区 / iOS 港区 / 券后），含折合 RMB 与 Per */
@@ -2076,13 +2634,17 @@ function renderSpend() {
   if (!mine.some(o => o.id === spendSel.oid)) {
     spendSel.oid = mine.length ? mine[0].id : null;
     spendSel.ri = 0;
+    spendSel.ci = -1;
   }
   const opt = mine.find(o => o.id === spendSel.oid) || null;
   if (opt && spendSel.ri >= opt.rows.length) spendSel.ri = 0;
-  const row = opt ? (opt.rows[spendSel.ri] || null) : null;
+  const isCustom = !!(opt && opt.custom);
+  const row = (!isCustom && opt) ? (opt.rows[spendSel.ri] || null) : null;
   const plat = dataStore[spendSel.p];
-  const chans = (opt && row) ? channelsOf(opt, row, plat) : [];
+  if (isCustom && !spendCustom.cur) spendCustom.cur = plat.currency;
+  const chans = isCustom ? customChannel(plat) : ((opt && row) ? channelsOf(opt, row, plat) : []);
   const bestCh = chans.find(c => c.best) || null;
+  const selCh = pickChannel(chans, spendSel.ci) || bestCh;   // 指定了渠道/券就用指定的，否则自动取最省
 
   const picker = `<div class="spend-picker">
     <label>平台
@@ -2093,35 +2655,57 @@ function renderSpend() {
       <select id="sp-o">${mine.map(o =>
         `<option value="${o.id}"${o.id === spendSel.oid ? ' selected' : ''}>${o.label}</option>`).join('')}</select>
     </label>
-    <label>档次
+    ${isCustom
+      ? `<label>币种
+           <select id="sp-cur">${CALC_CURS.map(c => `<option value="${c}"${c === spendCustom.cur ? ' selected' : ''}>${CUR_NAME[c]} ${CURRENCY_SYMBOL[c]}</option>`).join('')}</select>
+         </label>
+         <label>价格（${CUR_NAME[spendCustom.cur] || ''}）
+           <input id="sp-cprice" type="text" inputmode="decimal" autocomplete="off" value="${attr(spendCustom.price)}" placeholder="如 9900">
+         </label>
+         <label>实得数量（可写 20+10）
+           <input id="sp-cqty" type="text" inputmode="numeric" autocomplete="off" value="${attr(spendCustom.qty)}" placeholder="如 20+10">
+         </label>
+         <div class="hint">自己填一个表里没有的组合：选币种 → 填价格 → 填<b>到账总数</b>（含赠送，可写 20+10）。
+           立刻按 <b>${plat.perLabels ? plat.perLabels[0] : 'Per'}</b> 算出折合 RMB 与 Per，再点「加入今日清单」计入今天的总花费。</div>`
+      : `<label>档次
       <select id="sp-r">${(opt ? opt.rows : []).map((r, i) =>
         `<option value="${i}"${i === spendSel.ri ? ' selected' : ''}>${tierLabel(opt, r)}</option>`).join('')}</select>
-    </label>
-    <button class="btn tool sp-add" id="sp-add" type="button"${chans.length ? '' : ' disabled'}>加入今日清单</button>
+    </label>`}
+    ${(!isCustom && chans.length > 1) ? `<label>渠道 / 用券
+      <select id="sp-ch">
+        <option value="-1"${spendSel.ci < 0 ? ' selected' : ''}>自动（最省）</option>
+        ${chans.map((c, i) => `<option value="${i}"${i === spendSel.ci ? ' selected' : ''}>${c.label} · ¥${c.cny.toFixed(2)}</option>`).join('')}
+      </select>
+    </label>` : ''}
+    <button class="btn tool sp-add" id="sp-add" type="button"${(isCustom ? chans.length : selCh) ? '' : ' disabled'}>加入今日清单</button>
   </div>`;
 
   let hero = '', chTable = '';
   if (chans.length) {
     hero = `<div class="spend-hero">
       <div class="sh-item">
-        <div class="sh-t">本次花费 · 最低渠道</div>
-        <div class="sh-v">¥${bestCh.cny.toFixed(2)}</div>
-        <div class="sh-m">${bestCh.label}：${bestCh.sym}${bestCh.price.toLocaleString()}</div>
+        <div class="sh-t">本次花费 · ${spendSel.ci >= 0 ? '已选渠道' : '最低渠道'}</div>
+        <div class="sh-v">¥${selCh.cny.toFixed(2)}</div>
+        <div class="sh-m">${selCh.label}：${selCh.sym}${selCh.price.toLocaleString()}</div>
       </div>
       <div class="sh-item">
         <div class="sh-t">实得数量</div>
-        <div class="sh-v">${bestCh.base || '—'}</div>
-        <div class="sh-m">${row.qty}${/p\b/i.test(String(row.qty)) ? '（带 p 的是<b>积分</b>，不算币）' : ''}</div>
+        <div class="sh-v">${selCh.base || '—'}</div>
+        <div class="sh-m">${isCustom
+          ? (bestCh.base + (unitWord(plat) ? ' ' + unitWord(plat) : '') + '（自己填的实得数量）')
+          : (row.qty + (/p\b/i.test(String(row.qty)) ? '（带 p 的是<b>积分</b>，不算币）' : ''))}</div>
       </div>
       <div class="sh-item">
         <div class="sh-t">均价（${(plat.perLabels && plat.perLabels[0]) || 'Per'}）</div>
-        <div class="sh-v">${bestCh.per ? '¥' + bestCh.per.toFixed(2) : '—'}</div>
-        <div class="sh-m">${bestCh.per ? (unitWord(plat) ? '每 1 ' + unitWord(plat) + ' 折合' : '按第一个指标折算') : 'App Store Card 不折算 Per'}</div>
+        <div class="sh-v">${selCh.per ? '¥' + selCh.per.toFixed(2) : '—'}</div>
+        <div class="sh-m">${selCh.per ? (unitWord(plat) ? '每 1 ' + unitWord(plat) + ' 折合' : '按第一个指标折算') : 'App Store Card 不折算 Per'}</div>
       </div>
       <div class="sh-item">
         <div class="sh-t">选中的档位</div>
         <div class="sh-v" style="font-size:15px;line-height:1.5">${spendSel.p} · ${opt.label}</div>
-        <div class="sh-m">${tierLabel(opt, row)}${row.tag ? ' · ' + row.tag : ''}${row.limited ? ' · 需抢' : ''}</div>
+        <div class="sh-m">${isCustom
+          ? `自定义：${bestCh.sym}${bestCh.price.toLocaleString()} → 实得 ${bestCh.base}`
+          : (tierLabel(opt, row) + (row.tag ? ' · ' + row.tag : '') + (row.limited ? ' · 需抢' : ''))}</div>
       </div>
     </div>`;
     chTable = `<div class="card"><table>
@@ -2129,8 +2713,8 @@ function renderSpend() {
         <th class="c-text">支付渠道</th><th class="c-qty">数量</th><th class="c-price">价格</th>
         <th class="c-price">折合 RMB</th><th class="c-per">Per</th><th class="c-text">说明</th>
       </tr></thead>
-      <tbody>${chans.map(c => `<tr class="${c.best ? 'ch-best' : ''}">
-        <td class="c-text">${c.label}${c.best ? ' <span class="badge">Best</span>' : ''}</td>
+      <tbody>${chans.map((c, ci) => `<tr class="${c.best ? 'ch-best' : ''}">
+        <td class="c-text">${c.label}${c.best ? ' <span class="badge">Best</span>' : ''}${ci === spendSel.ci ? ' <span class="tag gold">已选</span>' : ''}</td>
         <td class="c-qty">${c.qty}</td>
         <td class="c-price">${c.sym}${c.price.toLocaleString()}</td>
         <td class="c-price">¥${c.cny.toFixed(2)}</td>
@@ -2145,10 +2729,15 @@ function renderSpend() {
     const o = opts.find(z => z.id === x.oid);
     const pl = dataStore[x.p];
     if (!o || !pl) return null;
+    if (o.custom) {
+      const cc = customItemChannel(x, pl);
+      if (!cc) return null;
+      return { x, act: o.label, tier: cc.tier, chLabel: cc.chLabel, cny: cc.cny, got: cc.got };
+    }
     const r = o.rows[x.ri] || o.rows[0];
     if (!r) return null;
     const chs = channelsOf(o, r, pl);
-    const bst = chs.find(c => c.best);
+    const bst = pickChannel(chs, x.ci);
     if (!bst) return null;
     return { x, act: o.label, tier: tierLabel(o, r), chLabel: bst.label, cny: bst.cny, got: bst.base };
   }).filter(Boolean);
@@ -2235,12 +2824,22 @@ function spendSnapshot() {
     const o = opts.find(z => z.id === x.oid);
     const pl = dataStore[x.p];
     if (!o || !pl) return;
+    if (o.custom) {
+      const cc = customItemChannel(x, pl);
+      if (!cc) return;
+      out.push({
+        p: x.p, oid: x.oid, ri: 0, custom: x.custom ? Object.assign({}, x.custom) : null,
+        act: o.label, tier: cc.tier, chLabel: cc.chLabel, cny: cc.cny, got: cc.got, qty: String(cc.got)
+      });
+      return;
+    }
     const r = o.rows[x.ri] || o.rows[0];
     if (!r) return;
-    const bst = channelsOf(o, r, pl).find(c => c.best);
+    const chs = channelsOf(o, r, pl);
+    const bst = pickChannel(chs, x.ci);
     if (!bst) return;
     out.push({
-      p: x.p, oid: x.oid, ri: x.ri,
+      p: x.p, oid: x.oid, ri: x.ri, ci: (x.ci == null ? -1 : x.ci),
       act: o.label, tier: tierLabel(o, r), chLabel: bst.label,
       cny: bst.cny, got: bst.base, qty: r.qty
     });
@@ -2269,12 +2868,26 @@ function spendAdd() {
   const plat = dataStore[spendSel.p];
   const opt = spendOptions().find(o => o.id === spendSel.oid);
   if (!plat || !opt) return;
+  if (opt.custom) {
+    const ch = customChannel(plat)[0];
+    if (!ch) { toast('请先填好自定义的价格和实得数量'); return; }
+    if (spendCartDate !== dayKey()) { spendCartDate = dayKey(); spendCart = []; }
+    spendCart.push({
+      id: ++spendSeq, p: spendSel.p, oid: spendSel.oid, ri: 0,
+      custom: { cur: spendCustom.cur, price: spendCustom.price, qty: spendCustom.qty }
+    });
+    spendChanged();
+    toast('已加入今日清单：' + spendSel.p + ' · 自定义 ' + ch.sym + ch.price.toLocaleString()
+      + '（实得 ' + ch.base + '）≈ ¥' + ch.cny.toFixed(2));
+    return;
+  }
   const row = opt.rows[spendSel.ri] || opt.rows[0];
   if (!row) return;
-  const best = channelsOf(opt, row, plat).find(c => c.best);
+  const chs = channelsOf(opt, row, plat);
+  const best = pickChannel(chs, spendSel.ci);
   if (!best) return;
   if (spendCartDate !== dayKey()) { spendCartDate = dayKey(); spendCart = []; }   // 跨天则先开新的一天
-  spendCart.push({ id: ++spendSeq, p: spendSel.p, oid: spendSel.oid, ri: spendSel.ri });
+  spendCart.push({ id: ++spendSeq, p: spendSel.p, oid: spendSel.oid, ri: spendSel.ri, ci: spendSel.ci });
   spendChanged();
   toast('已加入今日清单：' + spendSel.p + ' · ' + opt.label + ' · ' + best.label + ' ≈ ¥' + best.cny.toFixed(2));
 }
@@ -2360,6 +2973,16 @@ function buildBlocks() {
     return blocks;
   }
 
+  if (calcMode) {
+    document.querySelectorAll('#content .calc-card').forEach(card => {
+      const tbl = card.querySelector('table');
+      if (!tbl) return;
+      const t = card.querySelector('.calc-ttl');
+      blocks.push({ title: t ? cleanText(t.textContent) : '', rows: tableToMatrix(tbl) });
+    });
+    return blocks;
+  }
+
   if (cmpMode) {
     const qr = document.querySelector('#content .qty-rank table');
     if (qr) blocks.push({ title: '按数量对比 · 买 ' + cmpQty + ' 个', rows: tableToMatrix(qr) });
@@ -2388,11 +3011,13 @@ function buildBlocks() {
 /* 导出的文件名 / 表头首行（按模式区分，不再一律「平台_比价」） */
 function exportName() {
   if (spendMode) return '今日花费_清单_' + dayKey();
+  if (calcMode)  return '自助计算_' + calcRows.length + '条_' + dayKey();
   if (cmpMode) return '对比' + cmpPicks.length + '项' + (cmpQty ? '_买' + cmpQty + '个' : '') + '_' + dayKey();
   return currentSub + '_比价';
 }
 function exportTitle() {
   if (spendMode) return '今日花费 · 今日清单（' + dayLabel(spendCartDate) + '）';
+  if (calcMode)  return '自助计算 · 自定义价格 / 数量（共 ' + calcRows.length + ' 条）';
   if (cmpMode) {
     const list = cmpPicks.map(p => p.p + ' · ' + p.label).join('  vs  ');
     return '对比模式 · ' + (list || '（未选对比项）') + (cmpQty ? ' ｜ 按数量：买 ' + cmpQty + ' 个' : '');
@@ -2417,6 +3042,7 @@ function blocksToDelimited(blocks, sep) {
 /* 顶栏两个按钮的名字随模式变，避免「在对比模式点了导出平台 CSV」这种误触 */
 function toolLabels() {
   if (spendMode) return { copy: '复制今日清单', csv: '导出清单 CSV' };
+  if (calcMode)  return { copy: '复制计算结果', csv: '导出计算 CSV' };
   if (cmpMode)   return { copy: '复制对比表格', csv: '导出对比 CSV' };
   return { copy: '复制当前平台表格', csv: '导出 CSV' };
 }
@@ -2488,6 +3114,16 @@ function toast(msg) {
   el._t = setTimeout(() => el.classList.remove('show'), 2200);
 }
 
+/* 三个模式的按钮文字 / 高亮统一在这里同步，避免漏改 */
+function syncModeButtons() {
+  const bc = document.getElementById('btn-cmp');
+  const bs = document.getElementById('btn-spend');
+  const bk = document.getElementById('btn-calc');
+  if (bc) { bc.textContent = '对比模式：' + (cmpMode ? '开' : '关'); bc.classList.toggle('on', cmpMode); }
+  if (bs) { bs.textContent = '今日花费：' + (spendMode ? '开' : '关'); bs.classList.toggle('on', spendMode); }
+  if (bk) { bk.textContent = '自助计算：' + (calcMode ? '开' : '关'); bk.classList.toggle('on', calcMode); }
+}
+
 /* ================= 初始化 ================= */
 async function init() {
   renderPlatformTabs();
@@ -2504,30 +3140,97 @@ async function init() {
 
   const btnCmp = document.getElementById('btn-cmp');
   const btnSpend = document.getElementById('btn-spend');
+  const btnCalc = document.getElementById('btn-calc');
   btnCmp.onclick = () => {
     cmpMode = !cmpMode;
-    if (cmpMode) spendMode = false;              // 两个模式互斥
-    btnCmp.textContent = '对比模式：' + (cmpMode ? '开' : '关');
-    btnCmp.classList.toggle('on', cmpMode);
-    btnSpend.textContent = '今日花费：' + (spendMode ? '开' : '关');
-    btnSpend.classList.toggle('on', spendMode);
+    if (cmpMode) { spendMode = false; calcMode = false; }   // 三个模式互斥
+    syncModeButtons();
     renderContent();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   btnSpend.onclick = () => {
     spendMode = !spendMode;
-    if (spendMode) cmpMode = false;
-    btnSpend.textContent = '今日花费：' + (spendMode ? '开' : '关');
-    btnSpend.classList.toggle('on', spendMode);
-    btnCmp.textContent = '对比模式：' + (cmpMode ? '开' : '关');
-    btnCmp.classList.toggle('on', cmpMode);
+    if (spendMode) { cmpMode = false; calcMode = false; }
+    syncModeButtons();
+    renderContent();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  btnCalc.onclick = () => {
+    calcMode = !calcMode;
+    if (calcMode) { cmpMode = false; spendMode = false; }
+    syncModeButtons();
     renderContent();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // 按 RMB 预算对比：输入预算，实时重算（与数量二选一）
+  // 输入框会随整块内容重绘，所以重绘后必须重新 focus 并把光标放到末尾（同 cmp-qty 的处理）
+  document.getElementById('content').addEventListener('input', e => {
+    const t = e.target;
+    if (!t || t.id !== 'cmp-budget') return;
+    const raw = String(t.value);
+    const cleaned = (raw.match(/[\d.]/g) || []).join('');
+    const n = parseFloat(cleaned);
+    const v = isFinite(n) ? Math.min(Math.max(0, Math.round(n * 100) / 100), 9999999) : 0;
+    const want = v ? String(v) : '';
+    if (raw === want && v === cmpBudget) return;
+    cmpBudget = v;
+    if (cmpBudget) cmpQty = 0;
+    renderContent();
+    const el = document.getElementById('cmp-budget');
+    if (el) {
+      el.focus();
+      const n2 = el.value.length;
+      try { el.setSelectionRange(n2, n2); } catch (_) {}
+    }
+  });
+
+  // 自助计算：价格 / 数量 改动只重绘 hero（不整块重绘，输入焦点才不会掉）
+  document.getElementById('content').addEventListener('input', e => {
+    const t = e.target;
+    if (!t || !t.id) return;
+    if (t.id === 'cl-price') { calcSel.price = t.value; }
+    else if (t.id === 'cl-qty') { calcSel.qty = t.value; }
+    else if (t.id === 'cl-name') { calcSel.name = t.value; return; }
+    else if (t.id === 'sp-cprice') {
+      spendCustom.price = t.value;
+      renderContent();
+      const el = document.getElementById('sp-cprice');
+      if (el) { el.focus(); const n = el.value.length; try { el.setSelectionRange(n, n); } catch (_) {} }
+      return;
+    } else if (t.id === 'sp-cqty') {
+      spendCustom.qty = t.value;
+      renderContent();
+      const el = document.getElementById('sp-cqty');
+      if (el) { el.focus(); const n = el.value.length; try { el.setSelectionRange(n, n); } catch (_) {} }
+      return;
+    } else return;
+    if (!calcMode) return;
+    const h = document.getElementById('cl-hero');
+    if (h) h.innerHTML = calcHeroHtml();
+    const b = document.getElementById('cl-add');
+    if (b) b.disabled = !calcPreview();
+  });
+
   // 对比项选择（事件委托：#content 的 innerHTML 会被替换，容器本身不变）
   document.getElementById('content').addEventListener('click', e => {
     const el = e.target;
+    // ---- 自助计算：加入结果表 / 删除某条 / 清空全部 ----
+    const cadd = el.closest && el.closest('#cl-add');
+    if (cadd && calcMode) { calcAdd(); return; }
+    const cadd2 = el.closest && el.closest('#cl-add2');
+    if (cadd2 && calcMode) { calcAddToSpend(); return; }
+    const c2s = el.closest && el.closest('[data-calctospend]');
+    if (c2s && calcMode) { calcToSpend(c2s.dataset.calctospend); return; }
+    const crm = el.closest && el.closest('[data-calcrm]');
+    if (crm && calcMode) { calcRm(crm.dataset.calcrm); return; }
+    const ccl = el.closest && el.closest('[data-calcclear]');
+    if (ccl && calcMode) { calcClear(); return; }
+
+    // ---- 对比模式：清除预算 ----
+    const bcl = el.closest && el.closest('[data-budgetclear]');
+    if (bcl && cmpMode) { cmpBudget = 0; renderContent(); return; }
+
     // ---- 今日花费：加入清单 / 删除 / 清空 ----
     const add = el.closest && el.closest('#sp-add');
     if (add && spendMode) { spendAdd(); return; }
@@ -2546,7 +3249,11 @@ async function init() {
       const rec = spendHistory[k];
       if (rec && rec.items && rec.items.length) {
         if (spendCartDate !== dayKey()) { spendCartDate = dayKey(); spendCart = []; }
-        rec.items.forEach(y => spendCart.push({ id: ++spendSeq, p: y.p, oid: y.oid, ri: y.ri }));
+        rec.items.forEach(y => spendCart.push({
+          id: ++spendSeq, p: y.p, oid: y.oid, ri: y.ri || 0,
+          ci: (y.ci == null ? -1 : y.ci),
+          custom: y.custom ? Object.assign({}, y.custom) : null
+        }));
         spendChanged();
         toast('已把 ' + dayLabel(k) + ' 的 ' + rec.items.length + ' 笔载入今日清单');
       }
@@ -2602,9 +3309,14 @@ async function init() {
     const t = e.target;
     if (!t || !t.id) return;
     if (t.id === 'cmp-combo') { allowCombo = !!t.checked; renderContent(); return; }
-    if (t.id === 'sp-p') { spendSel.p = t.value; spendSel.oid = null; spendSel.ri = 0; renderContent(); return; }
-    if (t.id === 'sp-o') { spendSel.oid = t.value; spendSel.ri = 0; renderContent(); return; }
-    if (t.id === 'sp-r') { spendSel.ri = parseInt(t.value, 10) || 0; renderContent(); return; }
+    if (t.id === 'cmp-byper' || t.id === 'cmp-byper2') { cmpByPer = !!t.checked; renderContent(); return; }
+    if (t.id === 'cl-p')   { calcSel.p = t.value; renderContent(); return; }
+    if (t.id === 'cl-cur') { calcSel.cur = t.value; renderContent(); return; }
+    if (t.id === 'sp-cur') { spendCustom.cur = t.value; renderContent(); return; }
+    if (t.id === 'sp-p') { spendSel.p = t.value; spendSel.oid = null; spendSel.ri = 0; spendSel.ci = -1; renderContent(); return; }
+    if (t.id === 'sp-o') { spendSel.oid = t.value; spendSel.ri = 0; spendSel.ci = -1; renderContent(); return; }
+    if (t.id === 'sp-r') { spendSel.ri = parseInt(t.value, 10) || 0; spendSel.ci = -1; renderContent(); return; }
+    if (t.id === 'sp-ch') { spendSel.ci = (t.value === '' ? -1 : parseInt(t.value, 10)); renderContent(); return; }
   });
 
   // 按数量对比：输入「想买多少个」，实时重算。
@@ -2620,6 +3332,7 @@ async function init() {
     const want = nv ? String(nv) : '';
     if (raw === digits && raw === want && nv === cmpQty) return;   // 已是规范形态且值没变 → 不必重绘
     cmpQty = nv;
+    if (cmpQty) cmpBudget = 0;            // 数量与预算二选一
     renderContent();
     const el = document.getElementById('cmp-qty');
     if (el) {
