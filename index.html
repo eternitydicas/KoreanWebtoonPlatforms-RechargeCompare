@@ -254,8 +254,20 @@
     display: flex; align-items: center; gap: 10px; padding: 9px 12px;
     background: var(--bg); border-bottom: 1px solid var(--border);
     font-size: 13.5px; font-weight: 600; color: var(--text);
+    cursor: pointer; user-select: none;
   }
-  .memo-dayhead .sub { margin-left: auto; font-weight: 400; font-size: 12px; color: var(--muted); }
+  .memo-dayhead:hover { background: var(--green-bg); }
+  .memo-day:not(.open) .memo-dayhead { border-bottom: 0; }
+  .memo-dayhead .memo-dt { flex: 0 0 auto; }
+  .memo-dayhead .memo-cnt {
+    flex: 0 0 auto; font-weight: 400; font-size: 12px; color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .memo-dayhead .memo-prev {
+    margin-left: auto; min-width: 0; font-weight: 400; font-size: 12px; color: var(--muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 48%;
+  }
+  .memo-dayhead .memo-caret { flex: 0 0 auto; color: var(--muted); font-size: 11px; width: 12px; text-align: center; }
   .memo-item { padding: 10px 12px; }
   .memo-item + .memo-item { border-top: 1px dashed var(--border-3); }
   .memo-item .mm-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 5px; }
@@ -275,6 +287,8 @@
     .memo-bar .btn.tool.tiny { margin-left: 0; }
     .memo-item .mm-x { margin-left: 0; flex: 1 1 100%; }
     .memo-form .sp-add { margin-left: 0; }
+    .memo-dayhead .memo-prev { display: none; }
+    .memo-dayhead .memo-caret { margin-left: auto; }
   }
 
   /* ============ 今日花费 · Today's Spending ============ */
@@ -1076,6 +1090,8 @@ let memoSeq        = 0;
 let memoForm       = { p: '', day: '', kind: '备注', text: '' };
 let memoFilter     = '';     // '' = 全部；'#none' = 只看不指定；否则 = 只看该平台
 let memoEditId     = null;   // 正在编辑的那条备忘 id
+let memoOpenDays   = [];      // 备忘录里当前展开的日期（可同时展开多天）
+let memoDaysReady  = false;   // 首次渲染时把「最近的一天」默认展开
 let calcRows       = [];     // 自助计算结果列表（可累积多条，按平台分组横向对比）
 let calcSeq        = 0;
 
@@ -3302,6 +3318,12 @@ function renderMemo() {
   });
   dayGroups.forEach(g => g.rows.sort(memoSort));
   dayGroups.sort((a, b) => a.k === b.k ? 0 : (a.k === '' ? 1 : (b.k === '' ? -1 : (a.k < b.k ? 1 : -1))));
+  if (!memoDaysReady) {                        // 首次进来：默认只展开最近的一天（有日期的优先）
+    const first = dayGroups.find(g => g.k) || dayGroups[0];
+    memoOpenDays = first ? [first.k] : [];
+    memoDaysReady = true;
+  }
+  const allOpen = dayGroups.length > 0 && dayGroups.every(g => memoDayOpen(g.k));
 
   const bar = `<div class="memo-bar">
     <span>共 <b>${memos.length}</b> 条${shown.length !== memos.length ? `（当前筛选 ${shown.length} 条）` : ''}</span>
@@ -3310,16 +3332,26 @@ function renderMemo() {
       <option value="#none"${memoFilter === '#none' ? ' selected' : ''}>只看「不指定」</option>
       ${plats.map(pp => `<option value="${pp}"${pp === memoFilter ? ' selected' : ''}>只看 ${pp}</option>`).join('')}
     </select>
+    <button class="chip" data-memoall="1" type="button">${allOpen ? '全部收起' : '全部展开'}</button>
     <button class="btn tool tiny" data-memoexp="1" type="button">导出备忘录 CSV</button>
     <button class="rm" data-memoclear="1" type="button">清空全部</button>
   </div>`;
 
   const list = dayGroups.length
-    ? `<div class="memo-list">${dayGroups.map(g => `<div class="memo-day">
-        <div class="memo-dayhead">${
-          g.k ? dayLabel(g.k) + (g.k === dayKey() ? ' <span class="tag gold">今天</span>' : '') : '未标注日期'
-        }<span class="sub">${g.rows.length} 条</span></div>
-        ${g.rows.map(m => `<div class="memo-item">
+    ? `<div class="memo-list">${dayGroups.map(g => {
+        const open = memoDayOpen(g.k);
+        const rawPrev = String((g.rows[0] || {}).text || '').replace(/\s+/g, ' ').trim();
+        const prev = rawPrev.slice(0, 40) + (rawPrev.length > 40 ? '…' : '');
+        return `<div class="memo-day${open ? ' open' : ''}">
+        <div class="memo-dayhead" data-memoday="${attr(g.k)}" title="${open ? '点击收起' : '点击展开'}">
+          <span class="memo-dt">${
+            g.k ? dayLabel(g.k) + (g.k === dayKey() ? ' <span class="tag gold">今天</span>' : '') : '未标注日期'
+          }</span>
+          <span class="memo-cnt">${g.rows.length} 条</span>
+          <span class="memo-prev">${open ? '' : escHtml(prev)}</span>
+          <span class="memo-caret">${open ? '▾' : '▸'}</span>
+        </div>
+        ${open ? g.rows.map(m => `<div class="memo-item">
           <div class="mm-meta">
             <span class="mm-plat">${m.p ? escHtml(m.p) : '通用 · 不指定'}</span>
             ${m.kind ? `<span class="tag">${escHtml(m.kind)}</span>` : ''}
@@ -3329,13 +3361,28 @@ function renderMemo() {
             </span>
           </div>
           <div class="memo-text">${escMultiline(m.text)}</div>
-        </div>`).join('')}
-      </div>`).join('')}</div>`
+        </div>`).join('') : ''}
+      </div>`;
+      }).join('')}</div>`
     : `<div class="memo-empty">${memos.length
         ? '这个筛选下没有备忘 —— 换个平台看看。'
         : '还没有备忘 —— 上面选好平台 / 日期，写上内容，点「添加备忘录」就能记下来。'}</div>`;
 
   return `<div class="section-title" style="margin-top:0">备忘录 · Memo</div>` + form + bar + list;
+}
+
+function memoDayOpen(k) { return memoOpenDays.indexOf(k) >= 0; }
+function memoToggleDay(k) {
+  const i = memoOpenDays.indexOf(k);
+  if (i >= 0) memoOpenDays.splice(i, 1); else memoOpenDays.push(k);
+  renderContent();
+}
+function memoToggleAllDays() {
+  const keys = [].slice.call(document.querySelectorAll('#content [data-memoday]')).map(d => d.dataset.memoday);
+  if (!keys.length) return;
+  const wasAllOpen = keys.every(memoDayOpen);
+  memoOpenDays = wasAllOpen ? [] : keys.slice();
+  renderContent();
 }
 
 function memoAdd() {
@@ -3346,6 +3393,7 @@ function memoAdd() {
     const m = memos.find(x => String(x.id) === String(memoEditId));
     if (m) { m.p = memoForm.p; m.day = day; m.kind = memoForm.kind; m.text = text; }
     memoEditId = null;
+    if (!memoDayOpen(day)) memoOpenDays.push(day);
     lsSet(LS_MEMO, memos);
     memoForm.text = '';
     renderContent();
@@ -3353,6 +3401,7 @@ function memoAdd() {
     return;
   }
   memos.push({ id: ++memoSeq, day, p: memoForm.p, kind: memoForm.kind, text });
+  if (!memoDayOpen(day)) memoOpenDays.push(day);      // 新记的这天自动展开，免得看不到
   lsSet(LS_MEMO, memos);
   memoForm.text = '';
   renderContent();
@@ -3365,6 +3414,7 @@ function memoEdit(id) {
   if (!m) return;
   memoEditId = m.id;
   memoForm = { p: m.p || '', day: m.day || dayKey(), kind: m.kind || '备注', text: m.text || '' };
+  if (!memoDayOpen(memoForm.day)) memoOpenDays.push(memoForm.day);
   renderContent();
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const el = document.getElementById('mm-text');
@@ -3385,6 +3435,7 @@ function memoDel(id) {
 function memoClear() {
   if (!memos.length) { toast('还没有备忘'); return; }
   memos = []; memoEditId = null;
+  memoOpenDays = []; memoDaysReady = false;
   lsSet(LS_MEMO, memos);
   renderContent();
   toast('已清空全部备忘');
@@ -3746,6 +3797,10 @@ async function init() {
     if (mClr && memoMode) { memoClear(); return; }
     const mExp = el.closest && el.closest('[data-memoexp]');
     if (mExp && memoMode) { exportMemoCsv(); return; }
+    const mDay = el.closest && el.closest('[data-memoday]');
+    if (mDay && memoMode) { memoToggleDay(mDay.dataset.memoday); return; }
+    const mAll = el.closest && el.closest('[data-memoall]');
+    if (mAll && memoMode) { memoToggleAllDays(); return; }
 
     // ---- 自助计算：加入结果表 / 删除某条 / 清空全部 ----
     const cadd = el.closest && el.closest('#cl-add');
