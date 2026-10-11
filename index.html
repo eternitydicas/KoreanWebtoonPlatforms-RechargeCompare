@@ -743,7 +743,7 @@ const dataStore = {
         { month: "2026.9", rows: [
           { discount: "0.7",  qty: "325+325=650", price: 39000, base: 650 },
           { discount: "0.5",  qty: "495+495=990", price: 99000, base: 990 },
-          { discount: "0.45", qty: "223+223=446", price: 49000, base: 446, tag: "限时币2个月" },
+          { discount: "0.5", qty: "223+223=446", price: 49000, base: 446, tag: "限时币2个月" },
           { discount: "0.4",  qty: "163+163=326", price: 39000, base: 326 },
           { discount: "0.3",  qty: "104+104=208", price: 29000, base: 208 }
         ]}
@@ -1101,7 +1101,8 @@ function channelLabel(cur) {
 
 /* ================= 状态 ================= */
 // 兜底汇率（联网失败时用，务必定期按实时值校准；2026-10-05 实测值）
-let rates = { KRW: 0.00499, USD: 6.7104, HKD: 0.8551, JPY: 0.04254, CNY: 1 };   // 口径：1 单位外币 = ? RMB（CNY 恒为 1）
+let rates = { KRW: 0.00499, USD: 6.7104, HKD: 0.8551, JPY: 0.04254, CNY: 1 };   // 口径：1 单位外币 = ? RMB（CNY 恒为 1）；兜底值 2026-10-11 校准，源 open.er-api.com
+let rateDate = '';  // 汇率数据日期（open.er-api.com 的 time_last_update_unix → YYYY-MM-DD；联网失败则留空）
 let currentPlatform = "Lezhin";      // 当前正在渲染的平台（计算 Per 值时用到）
 let currentGroup   = TAB_GROUPS[0].name;   // 当前选中的标签分组
 let currentSub     = TAB_GROUPS[0].members[0];  // 当前分组内选中的平台（二级标签）
@@ -1215,10 +1216,16 @@ function sortMonthsDesc(months) {
 /* ================= 汇率 ================= */
 async function fetchRate(currency) {
   try {
-    const lower = currency.toLowerCase();
-    const res = await fetch(`https://cdn.jsdelivr.net/gh/NemesisX1/currency-api@main/v1/currencies/${lower}.json`);
+    const upper = currency.toUpperCase();
+    const res = await fetch(`https://open.er-api.com/v6/latest/${upper}`);
     const json = await res.json();
-    if (json && json[lower] && json[lower].cny) return json[lower].cny;
+    if (json && json.result === 'success' && json.rates && json.rates.CNY != null) {
+      if (json.time_last_update_unix) {
+        const d = new Date(json.time_last_update_unix * 1000);
+        rateDate = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      }
+      return json.rates.CNY;
+    }
     throw new Error('格式异常');
   } catch (e) {
     console.error(currency + ' 汇率获取失败', e);
@@ -4235,7 +4242,8 @@ async function init() {
   if (jpy) parts.push(`1 日元 ≈ <b>${jpy.toFixed(5)}</b> 元`);
 
   if (parts.length) {
-    rateEl.innerHTML = `当前汇率（对RMB）：${parts.join(' ｜ ')}`;
+    const d = rateDate ? `（数据日期 ${rateDate}）` : '';
+    rateEl.innerHTML = `当前汇率（对RMB）${d}：${parts.join(' ｜ ')}`;
   } else {
     rateEl.textContent = `未获取到实时汇率，使用默认值`;
   }
