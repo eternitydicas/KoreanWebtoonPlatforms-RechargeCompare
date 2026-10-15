@@ -447,7 +447,19 @@
 
   .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   @media (max-width: 1100px) { .month-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 640px)  { .month-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 640px)  { .month-grid { grid-template-columns: 1fr !important; } }
+  .month-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0 14px; }
+  .month-cols { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 12px; }
+  .month-cols .mf-label { font-size: 13px; font-weight: 700; color: var(--text-2); }
+  .month-cols .chip { padding: 3px 11px; font-size: 12.5px; }
+  .month-filter .mf-label { font-size: 13px; font-weight: 700; color: var(--text-2); }
+  .month-filter .chip { padding: 3px 11px; font-size: 12.5px; }
+  .month-filter .mf-only { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; font-size: 12.5px; color: var(--text-2); cursor: pointer; }
+  .month-filter .mf-only input { cursor: pointer; }
+  .month-filter .mf-count { margin-left: 6px; font-size: 12px; color: var(--muted); }
+  .mf-empty { color: var(--muted); font-size: 13px; padding: 10px 2px; }
+  tr.hit { background: #fff7e6; }
+  tr.hit td:first-child { box-shadow: inset 3px 0 0 #f0a500; }
 
   /* ============ 卡片：直角、细线、无阴影 ============ */
   .card {
@@ -742,8 +754,8 @@ const dataStore = {
         ]},
         { month: "2026.9", rows: [
           { discount: "0.7",  qty: "325+325=650", price: 39000, base: 650 },
-          { discount: "0.5",  qty: "495+495=990", price: 99000, base: 990 },
-          { discount: "0.5", qty: "223+223=446", price: 49000, base: 446, tag: "限时币2个月" },
+          { discount: "0.5",  qty: "495+495=990", price: 99000, base: 990, tag: "限时币2个月" },
+          { discount: "0.45", qty: "223+223=446", price: 49000, base: 446 },
           { discount: "0.4",  qty: "163+163=326", price: 39000, base: 326 },
           { discount: "0.3",  qty: "104+104=208", price: 29000, base: 208 }
         ]}
@@ -1107,6 +1119,9 @@ let currentPlatform = "Lezhin";      // 当前正在渲染的平台（计算 Per
 let currentGroup   = TAB_GROUPS[0].name;   // 当前选中的标签分组
 let currentSub     = TAB_GROUPS[0].members[0];  // 当前分组内选中的平台（二级标签）
 let showMin        = false;  // 只看最低档：每张表只留 Per 值最低的一档，历史月份合并为汇总表（默认关：打开就是完整档位）
+let monthDiscountFilter = [];   // 历史月份折扣筛选：选中的折扣（字符串数组，如 ["0.6"]）；空 = 不过滤（显示全部月份）
+let monthFilterOnly = false;    // 历史月份：true=只显示命中折扣的那几行；false=显示整月、命中行高亮
+let monthCols = 0;   // 历史月份每行显示列数：0 = 自动（3/2/1 响应式），4/5/6 = 固定每行列数
 let cmpMode        = false;  // 对比模式：跨平台 / 跨分区挑最多 4 项比较（每行最多 2 个）
 let cmpPicks       = [];     // 已选中的对比项（最多 4 个）
 let cmpQty         = 0;      // 按数量对比：目标数量（买了多少个币 / 点），0 = 关闭
@@ -1297,9 +1312,27 @@ function renderPlatformBlock(pKey) {
     if (section.isMonths) {
       flushBuffer();
       html += `<div class="section-title">${section.title}</div>`;
-      html += `<div class="month-grid">${sortMonthsDesc(section.months).map(m =>
-        renderMonthCard(m, platform, section.monthNote, section.grabDiscounts)
+      html += renderMonthFilterBar(section);
+      const colOpts = [0, 4, 5, 6];
+      const colChips = colOpts.map(n => {
+        const on = (n === monthCols) ? ' on' : '';
+        const label = n === 0 ? '自动' : (n + ' 个/行');
+        return `<button type="button" class="chip md-col${on}" data-mdcols="${n === 0 ? '' : n}">${label}</button>`;
+      }).join('');
+      html += `<div class="month-cols"><span class="mf-label">每行显示：</span>${colChips}</div>`;
+      const sel = monthDiscountFilter.map(String);
+      const months = sel.length
+        ? sortMonthsDesc(section.months).filter(m =>
+            (m.rows || []).some(r => sel.includes(String(r.discount))))
+        : sortMonthsDesc(section.months);
+      const gridStyle = monthCols ? ` style="grid-template-columns: repeat(${monthCols}, minmax(0, 1fr))"` : '';
+      html += `<div class="month-grid"${gridStyle}>${months.map(m =>
+        renderMonthCard(m, platform, section.monthNote, section.grabDiscounts,
+                        sel.length ? sel : null, monthFilterOnly)
       ).join('')}</div>`;
+      if (sel.length && !months.length) {
+        html += `<div class="mf-empty">没有月份包含选中的折扣。</div>`;
+      }
     } else if (section.isSummary) {
       flushBuffer();
       html += `<div class="section-title">${section.title}</div>`;
@@ -1352,8 +1385,12 @@ function minifySections(platform) {
   const out = [];
   platform.sections.forEach(sec => {
     if (sec.isMonths) {
-      // 每个月份只保留最低档，合并成一张汇总表
-      const rows = sec.months.map(m => {
+      // 每个月份只保留最低档，合并成一张汇总表（同样受折扣筛选约束）
+      const fsel = monthDiscountFilter.map(String);
+      const fmonths = fsel.length
+        ? sec.months.filter(m => (m.rows || []).some(r => fsel.includes(String(r.discount))))
+        : sec.months;
+      const rows = fmonths.map(m => {
         const secCur = platform.currency;
         const picked = pickMin(m.rows, secCur)[0];
         return {
@@ -1770,18 +1807,50 @@ function renderPointsTable(section, platform) {
   return `<div class="card">${section.note ? `<div class="card-note">${section.note}</div>` : ''}<table>${colgroup}<thead>${thead}</thead><tbody>${body}</tbody></table></div>`;
 }
 
+/* 历史月份：折扣筛选栏（多选；空选 = 显示全部；可切「只看选中折扣」） */
+function renderMonthFilterBar(section) {
+  const set = new Set();
+  (section.months || []).forEach(m => (m.rows || []).forEach(r => {
+    const n = parseFloat(r.discount);
+    if (isFinite(n)) set.add(n);
+  }));
+  const all = [...set].sort((a, b) => b - a);
+  if (!all.length) return '';
+  const sel = monthDiscountFilter.map(Number);
+  const chips = all.map(n => {
+    const d = String(n);
+    const on = sel.indexOf(n) >= 0 ? ' on' : '';
+    return `<button type="button" class="chip md-chip${on}" data-mdchip="${attr(d)}">${fmtDiscount(d)}</button>`;
+  }).join('');
+  const allOn = monthDiscountFilter.length ? '' : ' on';
+  const cnt = sel.length
+    ? sortMonthsDesc(section.months).filter(m => (m.rows || []).some(r => sel.indexOf(parseFloat(r.discount)) >= 0)).length
+    : (section.months || []).length;
+  return `<div class="month-filter">
+    <span class="mf-label">按折扣筛选：</span>
+    <button type="button" class="chip md-chip${allOn}" data-mdall="1">全部</button>
+    ${chips}
+    <label class="mf-only"><input type="checkbox" data-mdonly ${monthFilterOnly ? 'checked' : ''}/> 只看选中折扣</label>
+    <span class="mf-count">${sel.length ? '共 ' + cnt + ' 个月份含选中折扣' : '共 ' + cnt + ' 个月份'}</span>
+  </div>`;
+}
+
 /* 历史月份 */
-function renderMonthCard(m, platform, monthNote, grabDiscounts) {
+function renderMonthCard(m, platform, monthNote, grabDiscounts, hilite, onlyMatch) {
   const computed = m.rows.map(r => calcRow(r, platform.currency));
   const bestFlags = markBest(computed, 0);
   const perLabels = platform.perLabels;
   const grabList = grabDiscounts || [];   // 这些折扣档位需要抢（如 70% / 60%）
 
+  const hl = hilite && hilite.length ? hilite.map(String) : null;
   const body = computed.map((r, i) => {
+    const ds = String(r.discount);
+    if (onlyMatch && hl && !hl.includes(ds)) return '';
     const isBest = bestFlags[i];
     const perCells = r.perArr.map(p => `<td class="c-per">${p.toFixed(2)}</td>`).join('');
-    const isGrab = r.limited || grabList.includes(String(r.discount));
-    const cls = [isBest ? 'best' : '', isGrab ? 'limited' : ''].filter(Boolean).join(' ');
+    const isGrab = r.limited || grabList.includes(ds);
+    const isHit = !!(hl && hl.includes(ds));
+    const cls = [isBest ? 'best' : '', isGrab ? 'limited' : '', isHit ? 'hit' : ''].filter(Boolean).join(' ');
     return `<tr class="${cls}">
       <td class="c-text">${fmtDiscount(r.discount)}${isGrab ? '<span class="tag limited">需抢</span>' : ''}${r.tag ? `<span class="tag gold">${r.tag}</span>` : ''}${isBest ? '<span class="badge">Best</span>' : ''}</td>
       <td class="c-qty">${r.qty}</td>
@@ -2494,9 +2563,35 @@ function escHtml(s) {
 }
 /* 保留换行的正文 */
 function escMultiline(s) { return escHtml(s).replace(/\n/g, '<br>'); }
-/* 价格：去掉千分位逗号后取数字 */
+/* 价格：去掉千分位逗号后取数字；兼容算术表达式（如 88+88、100-20、2*88），自动算出结果 */
+function evalExpr(s) {
+  const toks = String(s).match(/(\d+\.?\d*|\.\d+|[+*/-])/g);
+  if (!toks || !/^\d/.test(toks[0])) return NaN;
+  const nums = [parseFloat(toks[0])];
+  const ops = [];
+  for (let i = 1; i < toks.length; i++) {
+    const t = toks[i];
+    if (t === '+' || t === '-' || t === '*' || t === '/') ops.push(t);
+    else {
+      const n = parseFloat(t);
+      if (!isFinite(n)) return NaN;
+      const last = ops[ops.length - 1];
+      if (last === '*' || last === '/') { nums.push(nums.pop() * (last === '*' ? n : 1 / n)); ops.pop(); }
+      else nums.push(n);
+    }
+  }
+  if (ops.length !== nums.length - 1) return NaN;
+  let v = nums[0];
+  for (let i = 0; i < ops.length; i++) v = ops[i] === '+' ? v + nums[i + 1] : v - nums[i + 1];
+  return v;
+}
 function numOf(v) {
-  const n = parseFloat(String(v == null ? '' : v).replace(/[,，\s]/g, ''));
+  const s = String(v == null ? '' : v).replace(/[,，\s]/g, '').trim();
+  if (s && /[+*/-]/.test(s)) {
+    const e = evalExpr(s);
+    if (isFinite(e)) return e;
+  }
+  const n = parseFloat(s);
   return isFinite(n) ? n : NaN;
 }
 /* 数量：支持「20+10」这种赠送写法，自动求和；也支持纯数字 */
@@ -4102,6 +4197,22 @@ async function init() {
       if (calcSel.kind !== k) { calcSel.kind = k; renderContent(); }
       return;
     }
+
+    // ---- 历史月份折扣筛选（常规视图） ----
+    const mdChip = el.closest && el.closest('[data-mdchip]');
+    if (mdChip) {
+      const d = mdChip.dataset.mdchip;
+      const i = monthDiscountFilter.indexOf(d);
+      if (i >= 0) monthDiscountFilter.splice(i, 1); else monthDiscountFilter.push(d);
+      renderContent();
+      return;
+    }
+    const mdAll = el.closest && el.closest('[data-mdall]');
+    if (mdAll) { monthDiscountFilter = []; monthFilterOnly = false; renderContent(); return; }
+    const mdOnly = el.closest && el.closest('[data-mdonly]');
+    if (mdOnly) { monthFilterOnly = !monthFilterOnly; renderContent(); return; }
+    const mdCols = el.closest && el.closest('[data-mdcols]');
+    if (mdCols) { const v = mdCols.dataset.mdcols; monthCols = v ? parseInt(v, 10) : 0; renderContent(); return; }
 
     // ---- 对比模式：清除预算 ----
     const bcl = el.closest && el.closest('[data-budgetclear]');
